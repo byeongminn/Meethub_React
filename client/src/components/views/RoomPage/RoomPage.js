@@ -75,11 +75,11 @@ function RoomPage(props) {
         async function getMedia(deviceId) {
             const initialConstrains = {
                 audio: true,
-                video: { facingMode: "user" }
+                video: false
             };
             const cameraConstrains = {
                 audio: true,
-                video: { deviceId: { exact: deviceId } }
+                video: false
             };
             try {
                 myStream = await navigator.mediaDevices.getUserMedia(

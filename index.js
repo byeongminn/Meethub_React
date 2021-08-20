@@ -21,7 +21,7 @@ mongoose.connect(config.mongoURI, {
   useFindAndModify: false,
   useCreateIndex: true
 }).then(() => console.log("MongoDB Connected..."))
-.catch(err => console.log(err));
+  .catch(err => console.log(err));
 
 app.get('/', function (req, res) {
   res.send('Hello World!');
@@ -56,8 +56,8 @@ app.post("/api/users/login", (req, res) => {
         if (err) return res.status(400).send(err);
 
         res.cookie("x_auth", user.token)
-        .status(200)
-        .json({ loginSuccess: true, userId: user._id });
+          .status(200)
+          .json({ loginSuccess: true, userId: user._id });
       })
     })
   })
@@ -97,10 +97,10 @@ wsServer.on("connection", (socket) => {
   socket.on("offer", (offer, roomName) => {
     socket.to(roomName).emit("offer", offer);
   })
-socket.on("answer", (answer, roomName) => {
+  socket.on("answer", (answer, roomName) => {
     socket.to(roomName).emit("answer", answer);
   })
-socket.on("ice", (ice, roomName) => {
+  socket.on("ice", (ice, roomName) => {
     socket.to(roomName).emit("ice", ice);
   })
 })
