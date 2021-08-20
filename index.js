@@ -91,8 +91,12 @@ const wsServer = SocketIO(httpServer, {
 wsServer.on("connection", (socket) => {
   socket.on("join_room", (roomName, userName) => {
     socket.join(roomName);
+    room = roomName;
     wsServer.to(roomName).emit("welcome", userName);
   });
+  socket.on("send_message", (roomName, chat) => {
+    wsServer.to(roomName).emit("receive_message", chat);
+  })
 })
 
 app.post("/api/rooms/make", (req, res) => {

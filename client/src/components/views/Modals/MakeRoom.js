@@ -4,7 +4,13 @@ import "./MakeRoom.css";
 import axios from 'axios';
 
 function MakeRoom(props) {
+    const [user, setUser] = useState({});
     const [roomName, setRoomName] = useState("");
+
+    useEffect(() => {
+        axios.get("/api/users/auth")
+            .then(response => setUser(response.data));
+    }, [])
 
     const onChange = (event) => {
         const {
@@ -14,10 +20,15 @@ function MakeRoom(props) {
     }
     
     const onOk = () => {
-        props.history.push({
-            pathname: `/rooms/${roomName}`,
-            roomName,
-        });
+        if (user.isAuth) {
+            props.history.push({
+                pathname: `/rooms/${roomName}`,
+                roomName,
+                user
+            });
+        } else {
+            props.history.push("/login");
+        }
     }
 
     return (
