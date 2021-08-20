@@ -10,6 +10,7 @@ const cors = require("cors");
 const { User } = require("./server/models/User");
 const { auth } = require('./server/middleware/auth');
 const { Room } = require("./server/models/Room");
+const { Chat } = require("./server/models/Chat");
 
 app.use(express.json());
 app.use(cookieParser());

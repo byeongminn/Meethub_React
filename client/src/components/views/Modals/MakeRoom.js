@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Modal } from "antd";
 import "./MakeRoom.css";
-import axios from 'axios';
 
 function MakeRoom(props) {
     const [roomName, setRoomName] = useState("");
