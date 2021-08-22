@@ -1,28 +1,37 @@
-import React, { useState } from 'react';
-import Input from './Input';
+import React, { useState, useEffect } from 'react'
 
-function Chat({ socket, user, roomName }) {
-    const [content, setContent] = useState("");
+function Chat({ socket, user, roomName, setChatList }) {
+    const [value, setValue] = useState("");
     
-    const getContent = (content) => {
-        setContent(content);
+    useEffect(() => {
+        socket.on("receive_message", (chat) => {
+            setChatList((chatList) => chatList.concat(chat));
+        })
+    }, [])
+
+    const onChange = (event) => {
+        const {
+            target: { value }
+        } = event;
+        setValue(value);
     }
 
-    if (content !== "") {
+    const onSubmit = (event) => {
+        event.preventDefault();
+
         const body = {
             sender: user.name,
-            content
+            content: value
         }
         socket.emit("send_message", roomName, body);
-        socket.on("receive_message", (chat) => {
-            console.log(chat);
-        })
+        setValue("");
     }
-
 
     return (
         <div>
-            <Input getContent={getContent} />
+            <form onSubmit={onSubmit}>
+                <input type="text" value={value} onChange={onChange} />
+            </form>
         </div>
     )
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { io } from "socket.io-client";
 import axios from 'axios';
-import Chat from './components/Chat';
+import ChatList from './components/ChatList';
 
 function RoomPage(props) {
     const user = props.location.user;
@@ -28,7 +28,7 @@ function RoomPage(props) {
     return (
         <div>
             <button onClick={() => console.log("앙")}>눌러보세요</button>
-            <Chat socket={socket} user={user} roomName={roomName} />
+            <ChatList socket={socket} user={user} roomName={roomName} />
         </div>
     )
 }
