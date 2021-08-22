@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Chat from './Chat';
 import "./ChatList.css";
 
 function ChatList({ socket, user, roomName }) {
     const [chatList, setChatList] = useState([]);
+    const divRef = useRef();
+
+    useEffect(() => {
+        divRef.current.scrollTop = divRef.current.scrollHeight;
+    }, [chatList]);
 
     return (
         <>
-            <div className="ChatList__container">
+            <div className="ChatList__container" ref={divRef}>
                 {chatList.map(({ sender, content }, index) => (
                     <div key={index}>
                         <h3>{sender}</h3>

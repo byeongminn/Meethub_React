@@ -23,8 +23,11 @@ function Chat({ socket, user, roomName, setChatList }) {
             sender: user.name,
             content: value
         }
-        socket.emit("send_message", roomName, body);
-        setValue("");
+
+        if (value) {
+            socket.emit("send_message", roomName, body);
+            setValue("");
+        }
     }
 
     return (
