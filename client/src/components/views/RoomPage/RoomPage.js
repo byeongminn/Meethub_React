@@ -2,6 +2,7 @@ import React from 'react';
 import { io } from "socket.io-client";
 import axios from 'axios';
 import ChatList from './components/ChatList';
+import ShareDisplay from './components/ShareDisplay';
 
 function RoomPage(props) {
     const user = props.location.user;
@@ -27,7 +28,7 @@ function RoomPage(props) {
 
     return (
         <div>
-            <button onClick={() => console.log("앙")}>눌러보세요</button>
+            <ShareDisplay />
             <ChatList socket={socket} user={user} roomName={roomName} />
         </div>
     )
