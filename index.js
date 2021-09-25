@@ -111,7 +111,7 @@ app.post("/api/rooms/make", (req, res) => {
         const room = new Room(req.body);
       
         room.save((err, room) => {
-          if (err) return res.json({ success: false, err });
+          if (err) return res.json({ success: false, exist: false, err });
           return res.status(200).json({
             success: true, exist: false, roomId: room._id
           })
@@ -120,12 +120,12 @@ app.post("/api/rooms/make", (req, res) => {
     })
 })
 
-app.post('/api/rooms/join', (req, res) => {
-  Room.findOne({ roomName: req.body.roomName })
-    .exec((err, room) => {
+app.get('/api/rooms/getRooms', (req, res) => {
+  Room.find()
+    .populate('creator')
+    .exec((err, rooms) => {
       if (err) return res.json({ success: false, err });
-      if (!room) return res.json({ success: false, message: '존재하지 않는 방입니다.' });
-      res.json({ success: true, roomId: room._id });
+      res.json({ success: true, rooms });
     })
 })
 

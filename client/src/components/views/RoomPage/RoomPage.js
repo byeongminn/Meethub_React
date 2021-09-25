@@ -1,4 +1,5 @@
-import React from 'react';
+import { message } from 'antd';
+import React, { useEffect } from 'react';
 import { io } from "socket.io-client";
 import ChatList from './Sections/ChatList';
 import ShareDisplay from './Sections/ShareDisplay';
@@ -8,11 +9,13 @@ function RoomPage(props) {
     const roomName = props.match.params.roomId;
 
     const socket = io("http://localhost:5000");
-    console.log(socket);
-    socket.emit("join_room", roomName, user.name);
-    socket.on("welcome", (userName) => {
-        console.log(`${roomName}방에 ${userName}님이 입장하셨습니다.`);
-    })
+    
+    if (props.user._id) {
+        socket.emit("join_room", roomName, user.name);
+        socket.on("welcome", (userName) => {
+            message.info(`${roomName}방에 ${userName}님이 입장하셨습니다.`);
+        })
+    }
     
     return (
         <div>
