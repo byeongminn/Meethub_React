@@ -1,11 +1,14 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function (SpecificComponent, option, adminRoute = null) {
     function AuthenticationCheck(props) {
+        const [user, setUser] = useState({});
+
         useEffect(() => {
             axios.get("/api/users/auth")
                 .then(response => {
+                    setUser(response.data);
                     if (!response.data.isAuth) {
                         if (option) {
                             props.history.push("/login");
@@ -23,7 +26,7 @@ export default function (SpecificComponent, option, adminRoute = null) {
         }, [])
 
         return (
-            <SpecificComponent {...props}/>
+            <SpecificComponent {...props} user={user}/>
         )
     }
 

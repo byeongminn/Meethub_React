@@ -1,26 +1,36 @@
 import React, { useState } from 'react';
 import axios from "axios";
-import MakeRoom from '../Modals/MakeRoom';
+import MakeRoom from './Sections/MakeRoom';
+import { message } from 'antd';
+import JoinRoom from './Sections/JoinRoom';
 
 function LandingPage(props) {
-    const [open, setOpen] = useState(false);
+    const [openMakeModal, setOpenMakeModal] = useState(false);
+    const [openJoinModal, setOpenJoinModal] = useState(false);
 
-    const handleOpen = () => {
-        setOpen(true);
+    const handleOpenMakeModal = () => {
+        setOpenMakeModal(true);
     }
 
-    const handleClose = () => {
-        setOpen(false);
+    const handleCloseMakeModal = () => {
+        setOpenMakeModal(false);
     }
 
+    const handleOpenJoinModal = () => {
+        setOpenJoinModal(true);
+    }
+
+    const handleCloseJoinModal = () => {
+        setOpenJoinModal(false);
+    }
+    
     const onClick = (event) => {
-        event.preventDefault();
         axios.get("/api/users/logout")
             .then(response => {
                 if (response.data.success) {
                     props.history.push("/login");
                 } else {
-                    alert("로그아웃 하는데 실패 했습니다.");
+                    message.error("로그아웃 하는데 실패 했습니다.");
                 }
             })
     }
@@ -33,9 +43,10 @@ function LandingPage(props) {
             <script src="/socket.io/socket.io.js"></script>
             <h2>시작 페이지</h2>
             <button onClick={onClick}>로그아웃</button>
-            <button onClick={handleOpen}>방 만들기</button>
-            <MakeRoom {...props} visible={open} onCancel={handleClose} />
-            <button>참여하기</button>
+            <button onClick={handleOpenMakeModal}>방 만들기</button>
+            <MakeRoom {...props} visible={openMakeModal} onCancel={handleCloseMakeModal} />
+            <button onClick={handleOpenJoinModal}>참여하기</button>
+            <JoinRoom {...props} visible={openJoinModal} onCancel={handleCloseJoinModal} />
         </div>
     )
 }

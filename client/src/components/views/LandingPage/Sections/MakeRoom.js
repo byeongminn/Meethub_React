@@ -1,16 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Modal } from "antd";
-import "./MakeRoom.css";
+import React, { useState } from 'react';
+import { message, Modal } from "antd";
 import axios from 'axios';
 
 function MakeRoom(props) {
-    const [user, setUser] = useState({});
     const [roomName, setRoomName] = useState("");
-
-    useEffect(() => {
-        axios.get("/api/users/auth")
-            .then(response => setUser(response.data));
-    }, [])
 
     const onChange = (event) => {
         const {
@@ -18,14 +11,23 @@ function MakeRoom(props) {
         } = event;
         setRoomName(value);
     }
-    
+
     const onOk = () => {
-        if (user.isAuth) {
-            props.history.push({
-                pathname: `/rooms/${roomName}`,
-                roomName,
-                user
-            });
+        if (props.user.isAuth) {
+            const variables = {
+                creator: props.user._id,
+                roomName
+            }
+            axios.post('/api/rooms/make', variables)
+                .then(response => {
+                    if (!response.data.exist) {
+                        props.history.push({
+                            pathname: `/rooms/${response.data.roomId}`
+                        });
+                    } else {
+                        message.error(response.data.message);
+                    }
+                })
         } else {
             props.history.push("/login");
         }

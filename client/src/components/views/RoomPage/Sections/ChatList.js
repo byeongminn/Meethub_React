@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Chat from './Chat';
-import "./ChatList.css";
 
 function ChatList({ socket, user, roomName }) {
     const [chatList, setChatList] = useState([]);

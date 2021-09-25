@@ -1,13 +1,15 @@
 const mongoose = require("mongoose");
+const Schema = mongoose;
 
 const roomSchema = mongoose.Schema({
     roomName: {
         type: String,
+        unique: 1,
         maxlength: 50
     },
-    email: {
-        type: String,
-        trim: true,
+    creator: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
     },
     role: {
         type: Number,
