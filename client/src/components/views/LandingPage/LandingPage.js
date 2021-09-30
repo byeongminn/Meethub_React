@@ -3,12 +3,15 @@ import axios from "axios";
 import MakeRoom from './Sections/MakeRoom';
 import { Avatar, Card, Col, message, Row } from 'antd';
 import { LockFilled } from '@ant-design/icons';
+import JoinPrivateRoom from './Sections/JoinPrivateRoom';
 
 const { Meta } = Card;
 
 function LandingPage(props) {
     const [rooms, setRooms] = useState([]);
     const [openMakeModal, setOpenMakeModal] = useState(false);
+    const [privateRoom, setPrivateRoom] = useState({});
+    const [openJoinModal, setOpenJoinModal] = useState(false);
 
     useEffect(() => {
         axios.get('/api/rooms/getRooms')
@@ -28,8 +31,18 @@ function LandingPage(props) {
     const handleCloseMakeModal = () => {
         setOpenMakeModal(false);
     }
+
+    const handleOpenJoinModal = (room) => {
+        setOpenJoinModal(true);
+        setPrivateRoom(room);
+    }
+
+    const handleCloseJoinModal = () => {
+        setOpenJoinModal(false);
+        setPrivateRoom({});
+    }
     
-    const onClick = (event) => {
+    const onClick = () => {
         axios.get("/api/users/logout")
             .then(response => {
                 if (response.data.success) {
@@ -51,22 +64,29 @@ function LandingPage(props) {
             <MakeRoom {...props} visible={openMakeModal} onCancel={handleCloseMakeModal} />
             <hr />
             <Row gutter={[16, 16]}>
+                {openJoinModal ? <JoinPrivateRoom {...props} room={privateRoom} visible={privateRoom} onCancel={handleCloseJoinModal}/> : ''}
                 {rooms.length > 0 ?
                     rooms.map((room, index) => (
                         <Col key={index} lg={6} md={8} xs={24}>
-                            <a href={`/rooms/${room._id}`}>
-                                <Card style={{ position: 'relative' }}>
-                                    {room.roomPassword && <LockFilled style={{ position: 'absolute', right: 30 }} />}
-                                    <div style={{ width: '100%', height: '150px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                        <span style={{ color: 'black', fontSize: '2rem', fontWeight: '600' }}>{room.roomName}</span>
-                                    </div>
-                                    <br />
-                                    <Meta
-                                        title={`방장: ${room.creator.name}`}
-                                        description={room.roomDescription}
-                                    />
-                                </Card>
-                            </a>
+                            <Card style={{ position: 'relative', cursor: 'pointer' }}
+                                onClick={() => {
+                                    if (room.roomPassword) {
+                                        handleOpenJoinModal(room);
+                                    } else {
+                                        props.history.push(`/rooms/${room._id}`);
+                                    }
+                                }}
+                            >
+                                {room.roomPassword && <LockFilled style={{ position: 'absolute', right: 30 }} />}
+                                <div style={{ width: '100%', height: '150px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                    <span style={{ color: 'black', fontSize: '2rem', fontWeight: '600' }}>{room.roomName}</span>
+                                </div>
+                                <br />
+                                <Meta
+                                    title={`방장: ${room.creator.name}`}
+                                    description={room.roomDescription}
+                                />
+                            </Card>
                         </Col>
                     ))
                     : 
