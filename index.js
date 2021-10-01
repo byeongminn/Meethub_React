@@ -129,6 +129,15 @@ app.get('/api/rooms/getRooms', (req, res) => {
     })
 })
 
+app.post('/api/rooms/getRoom', (req, res) => {
+  Room.findOne({ _id: req.body.roomId })
+    .populate('creator')
+    .exec((err, room) => {
+      if (err) return res.json({ success: false, err });
+      res.json({ success: true, room });
+    })
+})
+
 httpServer.listen(5000, function () {
   console.log('http://localhost:5000');
 });
