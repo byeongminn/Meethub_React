@@ -81,6 +81,10 @@ app.get("/api/users/logout", auth, (req, res) => {
   })
 })
 
+// ===================================================
+//                      WebRTC
+// ===================================================
+
 const httpServer = http.createServer(app);
 const wsServer = SocketIO(httpServer, {
   cors: {
@@ -88,14 +92,43 @@ const wsServer = SocketIO(httpServer, {
   }
 });
 
+const maximum = 6;
+let users = {};
+let socketToRoom = {};
+
 wsServer.on("connection", (socket) => {
-  socket.on("join_room", (roomName, userName) => {
-    socket.join(roomName);
-    room = roomName;
-    wsServer.to(roomName).emit("welcome", userName);
+  socket.on("join_room", (data) => {
+    if (users[data.roomName]) {
+      const length = users[data.roomName].length;
+      if (length === maximum) {
+        socket.to(socket.id).emit('room_full');
+        return;
+      }
+      users[data.roomName].push({ user: data.user, socketId: socket.id });
+    } else {
+      users[data.roomName] = [{ user: data.user, socketId: socket.id }];
+    }
+    socketToRoom[socket.id] = data.roomName;
+/*     console.log(users[data.roomName]);
+    console.log(socketToRoom); */
+    socket.join(data.roomName);
+    wsServer.to(data.roomName).emit("welcome", data.user.name);
+    wsServer.to(data.roomName).emit('all_participants', users[data.roomName]);
   });
+  socket.on('participants', (roomName) => {
+    wsServer.to(roomName).emit('participants', users[roomName]);
+  })
   socket.on("send_message", (roomName, chat) => {
     wsServer.to(roomName).emit("receive_message", chat);
+  })
+  socket.on('disconnect', () => {
+    const roomName = socketToRoom[socket.id];
+    let room = users[roomName];
+    if (room) {
+      room = room.filter(user => user.socketId !== socket.id);
+      users[roomName] = room;
+    }
+    socket.to(roomName).emit('participants', users[roomName]);
   })
 })
 
