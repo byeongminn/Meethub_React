@@ -113,7 +113,6 @@ wsServer.on("connection", (socket) => {
     console.log(socketToRoom); */
     socket.join(data.roomName);
     wsServer.to(data.roomName).emit("welcome", data.user.name);
-    wsServer.to(data.roomName).emit('all_participants', users[data.roomName]);
   });
   socket.on('participants', (roomName) => {
     wsServer.to(roomName).emit('participants', users[roomName]);

@@ -37,7 +37,6 @@ function RoomPage(props) {
         socket.emit("join_room", { roomName: room.roomName, user });
         socket.on("welcome", (userName) => {
             message.info(`${room.roomName}에 ${userName}님이 입장하셨습니다.`);
-            console.log(socket.id);
         })
         socket.emit('participants', room.roomName);
         socket.on('participants', participants => {
