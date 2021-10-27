@@ -1,43 +1,52 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import MakeRoom from '../Modals/MakeRoom';
+import MakeRoom from "../Modals/MakeRoom";
 
 function LandingPage(props) {
-    const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [user, setUser] = useState({});
 
-    const handleOpen = () => {
-        setOpen(true);
-    }
+  useEffect(() => {
+    axios.get("/api/users/auth").then((response) => setUser(response.data));
+  }, []);
 
-    const handleClose = () => {
-        setOpen(false);
-    }
+  const handleOpen = () => {
+    setOpen(true);
+  };
 
-    const onClick = (event) => {
-        event.preventDefault();
-        axios.get("/api/users/logout")
-            .then(response => {
-                if (response.data.success) {
-                    props.history.push("/login");
-                } else {
-                    alert("로그아웃 하는데 실패 했습니다.");
-                }
-            })
-    }
+  const handleClose = () => {
+    setOpen(false);
+  };
 
-    return (
-        <div style={{
-            display: "flex", justifyContent: "center", alignItems: "center"
-            , width: "100%", height: "100vh"
-        }}>
-            <script src="/socket.io/socket.io.js"></script>
-            <h2>시작 페이지</h2>
-            <button onClick={onClick}>로그아웃</button>
-            <button onClick={handleOpen}>방 만들기</button>
-            <MakeRoom {...props} visible={open} onCancel={handleClose} />
-            <button>참여하기</button>
-        </div>
-    )
+  const onClick = (event) => {
+    event.preventDefault();
+    axios.get("/api/users/logout").then((response) => {
+      if (response.data.success) {
+        props.history.push("/login");
+      } else {
+        alert("로그아웃 하는데 실패 했습니다.");
+      }
+    });
+  };
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+        height: "100vh",
+      }}
+    >
+      <script src="/socket.io/socket.io.js"></script>
+      <h2>시작 페이지</h2>
+      <button onClick={onClick}>로그아웃</button>
+      <button onClick={handleOpen}>방 만들기</button>
+      <MakeRoom {...props} visible={open} onCancel={handleClose} user={user} />
+      <button>참여하기</button>
+    </div>
+  );
 }
 
-export default LandingPage
+export default LandingPage;
