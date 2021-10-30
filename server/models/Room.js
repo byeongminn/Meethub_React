@@ -11,36 +11,16 @@ const roomSchema = mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    role: {
-        type: Number,
-        default: 0
-    },
-    image: String,
-    manager: {
-        type: Array,
-        default: []
-    },
     roomPassword: {
         type: String,
-        
     },
     roomDescription: {
         type: String,
         maxlength: 50,
+    },
+    attendanceBook: {
+        type: Array
     }
-})
-
-roomSchema.pre("save", function (next) {
-    let room = this;
-    Room.findOne({ roomName: room.roomName }, (err, roomInfo) => {
-        if (err) return next(err);
-        if (!roomInfo) {
-            room.role = 1;
-            next();
-        } else {
-            return;
-        }
-    })
 })
 
 const Room = mongoose.model("Room", roomSchema);

@@ -81,6 +81,13 @@ app.get("/api/users/logout", auth, (req, res) => {
   })
 })
 
+app.post('/api/users/getUserFromEmail', (req, res) => {
+  User.findOne({ email: req.body.email }, (err, user) => {
+    if (err) return res.json({ success: false, err });
+    return res.status(200).json({ success: true, user });
+  })
+})
+
 // ===================================================
 //                      WebRTC
 // ===================================================
@@ -168,6 +175,13 @@ app.post('/api/rooms/getRoom', (req, res) => {
       if (err) return res.json({ success: false, err });
       res.json({ success: true, room });
     })
+})
+
+app.post('/api/rooms/attBookUpdate', (req, res) => {
+  Room.findOneAndUpdate({ _id: req.body.roomId }, { attendanceBook: req.body.attendanceBook }, (err, room) => {
+    if (err) return res.json({ success: false, err });
+    return res.status(200).send({ success: true, room });
+  })
 })
 
 httpServer.listen(5000, function () {

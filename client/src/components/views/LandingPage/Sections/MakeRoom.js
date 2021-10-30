@@ -33,7 +33,8 @@ function MakeRoom(props) {
                 creator: props.user._id,
                 roomName: values.roomName,
                 roomDescription: values.roomDescription,
-                roomPassword
+                roomPassword,
+                manager: props.user.email
             }
             axios.post('/api/rooms/make', variables)
                 .then(response => {

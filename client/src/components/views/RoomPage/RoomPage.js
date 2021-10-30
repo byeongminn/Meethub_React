@@ -2,6 +2,7 @@ import { message, Tabs } from 'antd';
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { io } from "socket.io-client";
+import Attend from './Sections/Attend';
 import ChatList from './Sections/ChatList';
 import ParticipantList from './Sections/ParticipantList';
 import ShareDisplay from './Sections/ShareDisplay';
@@ -38,24 +39,25 @@ function RoomPage(props) {
         socket.on("welcome", (userName) => {
             message.info(`${room.roomName}에 ${userName}님이 입장하셨습니다.`);
         })
-        socket.emit('participants', room.roomName);
-        socket.on('participants', participants => {
-            console.log(participants);
-        })
     }
+
+    /* 출결 부분 */
 
     return (
         <div>
             <ShareDisplay />
             {room.roomName && user.name &&
-                <Tabs defaultActiveKey='1'>
-                    <TabPane tab='사용자' key='1'>
-                        <ParticipantList socket={socket} roomName={room.roomName} />
-                    </TabPane>
-                    <TabPane tab='채팅' key='2'>
-                        <ChatList socket={socket} user={user} roomName={room.roomName} />
-                    </TabPane>
-                </Tabs>
+                <div>
+                    <Tabs defaultActiveKey='1'>
+                        <TabPane tab='사용자' key='1'>
+                            <ParticipantList socket={socket} roomName={room.roomName} />
+                        </TabPane>
+                        <TabPane tab='채팅' key='2'>
+                            <ChatList socket={socket} user={user} roomName={room.roomName} />
+                        </TabPane>
+                    </Tabs>
+                    <Attend socket={socket} roomName={room.roomName} room={room} user={props.user} />
+                </div>
             }
             <button onClick={() => {
                 socket.disconnect();
