@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './RegisterPage.css'
 
 function RegisterPage(props) {
     const [name, setName] = useState("");
@@ -51,7 +52,11 @@ function RegisterPage(props) {
             display: "flex", justifyContent: "center", alignItems: "center"
             , width: "100%", height: "100vh"
         }}>
-            <form style={{ display: "flex", flexDirection: "column" }} onSubmit={onSubmit}>
+            <div className="LoginBox">
+            <div class="LoginTitleDiv">
+                    <span class="LoginBoxTitle">MeetHub</span>
+                </div>
+            <form style={{ display: "flex", flexDirection: "column",width: "40%" }} onSubmit={onSubmit}>
                 <label>Name</label>
                 <input name="name" type="text" value={name} onChange={onChange} />
                 <label>Email</label>
@@ -62,9 +67,10 @@ function RegisterPage(props) {
                 <input name="confirmPassword" type="password" value={confirmPassword} onChange={onChange} />
                 <br />
                 <button type="submit">
-                    로그인
+                    회원가입
                 </button>
             </form>
+            </div>
         </div>
     )
 }

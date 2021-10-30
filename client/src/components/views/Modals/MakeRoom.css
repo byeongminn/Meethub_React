@@ -1,1 +1,11 @@
 @import "antd/dist/antd";
+
+
+.roomTitle{
+    margin-right: 15px;
+}
+
+.roomInput{
+    padding:4px;
+    padding-left:10px;
+}

@@ -29,8 +29,8 @@ function MakeRoom(props) {
         onOk={onOk}
         onCancel={props.onCancel}
       >
-        <label>방 제목</label>
-        <input type="text" value={roomName} onChange={onChange} />
+        <label className="roomTitle">방 제목</label>
+        <input className="roomInput" type="text" value={roomName} onChange={onChange} />
       </Modal>
     </div>
   );

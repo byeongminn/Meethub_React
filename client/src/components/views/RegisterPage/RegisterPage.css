@@ -1,0 +1,58 @@
+
+.LoginBox {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    border: 2px solid #3d837fb5;
+    box-shadow: 2px 2px 11px;
+    border-radius: 30px;
+    width: 600px;
+    height: 700px;
+    color: #0000009c;
+    font-size: 20px;
+}
+
+.LoginBoxTitle{
+    font-size: 50px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    color:#ffffff;
+}
+
+.LoginForm > label{
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-top:5px;
+}
+
+label{
+    font-size: 18px;
+    font-weight: bold;
+    margin:5px 0 5px 0;
+}
+
+input{
+    padding:4px;
+    padding-left:10px;
+    font-size: 14px;
+    border-radius: 12px;
+    border: 1px solid  #206bb375;
+}
+
+.LoginTitleDiv{
+    width: 100%;
+    height: 30%;
+    display: flex;
+    background-color: #329dcb61;
+    justify-content: center;
+    align-items: center;
+    border-radius: 30px 30px 0 0;
+    margin-bottom: 40px;
+    border-bottom: 5px solid #2d4f8b57;
+}
+
+form{
+    color: cadetblue;
+}
+
