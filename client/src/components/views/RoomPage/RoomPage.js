@@ -6,6 +6,7 @@ import Attend from './Sections/Attend';
 import ChatList from './Sections/ChatList';
 import ParticipantList from './Sections/ParticipantList';
 import ShareDisplay from './Sections/ShareDisplay';
+import VoteList from './Sections/VoteList';
 
 const { TabPane } = Tabs;
 
@@ -41,8 +42,6 @@ function RoomPage(props) {
         })
     }
 
-    /* 출결 부분 */
-
     return (
         <div>
             <ShareDisplay />
@@ -57,6 +56,7 @@ function RoomPage(props) {
                         </TabPane>
                     </Tabs>
                     <Attend socket={socket} roomName={room.roomName} room={room} user={props.user} />
+                    <VoteList room={room} user={props.user}/>
                 </div>
             }
             <button onClick={() => {

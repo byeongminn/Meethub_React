@@ -10,6 +10,7 @@ const cors = require("cors");
 const { User } = require("./server/models/User");
 const { auth } = require('./server/middleware/auth');
 const { Room } = require("./server/models/Room");
+const { Vote } = require("./server/models/Vote");
 
 app.use(express.json());
 app.use(cookieParser());
@@ -181,6 +182,51 @@ app.post('/api/rooms/attBookUpdate', (req, res) => {
   Room.findOneAndUpdate({ _id: req.body.roomId }, { attendanceBook: req.body.attendanceBook }, (err, room) => {
     if (err) return res.json({ success: false, err });
     return res.status(200).send({ success: true, room });
+  })
+})
+
+// ===================================================
+//                      VOTE
+// ===================================================
+
+app.post('/api/votes/register', (req, res) => {
+  const vote = new Vote(req.body);
+
+  vote.save((err, voteInfo) => {
+    if (err) return res.json({ success: false, err });
+    return res.json({ success: true })
+  })
+})
+
+app.post('/api/votes/getVotes', (req, res) => {
+  Vote.find({ room: req.body.roomId })
+    .populate('room')
+    .populate('creator')
+    .exec((err, votes) => {
+      if (err) return res.json({ success: false, err });
+      res.json({ success: true, votes });
+    })
+})
+
+app.post('/api/votes/voteClosing', (req, res) => {
+  Vote.findOneAndUpdate({ _id: req.body.voteId }, { available: false }, (err, vote) => {
+    if (err) return res.json({ success: false, err });
+    return res.status(200).send({ success: true, vote });
+  })
+})
+
+app.post('/api/votes/voteDelete', (req, res) => {
+  Vote.findOneAndDelete({ _id: req.body.voteId })
+    .exec((err, vote) => {
+      if (err) return res.json({ success: false, err });
+      return res.json({ success: true });
+    })
+})
+
+app.post('/api/votes/voteUpdate', (req, res) => {
+  Vote.findOneAndUpdate({ _id: req.body.voteId }, { options: req.body.options, voted: req.body.voted }, (err, vote) => {
+    if (err) return res.json({ success: false, err });
+    return res.json({ success: true });
   })
 })
 

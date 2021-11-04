@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Input, message, Modal, Form, Button } from "antd";
 import axios from 'axios';
-import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import { CheckOutlined } from '@ant-design/icons';
 
 function Attend(props) {
     const [participantList, setParticipantList] = useState([]);
@@ -181,7 +181,7 @@ function Attend(props) {
                             onAddEmail(values);
                         })
                         .catch(info => {
-                            message.error('필수 입력 사항들을 모두 입력해주세요.');
+                            
                         })
                 }}
                 onCancel={handleCloseAttendRegisterModal}
