@@ -1,79 +1,40 @@
 import React, { useState, useEffect, useRef } from "react";
-import Question from "./Modals/Question";
 import { io } from "socket.io-client";
 import axios from "axios";
 import Video from "../../Video/Video";
 
 function RoomPage(props) {
   const [user, setUser] = useState({});
-  const [test, setTest] = useState("");
-  const videoRef = useRef(null);
-  const peerFaceRef = useRef(null);
-  const selectRef = useRef(null);
-  const muteBtn = useRef(null);
-  const cameraBtn = useRef(null);
-  const questionBtn = useRef(null);
-
-  //================================================
-
-  const [socket, setSocket] = useState();
   const [users, setUsers] = useState([]);
 
   let localVideoRef = useRef(null);
+  let myCameraOn = useRef(true);
 
   let pcs;
 
   const pc_config = {
     iceServers: [
-      // {
-      //   urls: 'stun:[STUN_IP]:[PORT]',
-      //   'credentials': '[YOR CREDENTIALS]',
-      //   'username': '[USERNAME]'
-      // },
       {
         urls: "stun:stun.l.google.com:19302",
       },
     ],
   };
 
-  //================================================
-
-  const [openQuestion, setOpenQuestion] = useState(false);
-
-  const handleOpen = () => {
-    setOpenQuestion(true);
-  };
-
-  const handleClose = () => {
-    setOpenQuestion(false);
-  };
-
   const roomName = props.match.params.roomName;
-  let myStream;
-  let muted = false;
-  let cameraOff = false;
-  let myPeerConnection;
-  let myDataChannel;
 
   let newSocket;
 
   useEffect(() => {
     getMy();
-    //       {_id: '611ec3e37e3afa081c5b5c71', isAdmin: false, isAuth: true, email: 'sh2@naver.com', name: '성현2', …}
-    // email: "sh2@naver.com"
-    // isAdmin: false
-    // isAuth: true
-    // name: "성현2"
-    // role: 0
-
-    console.log(props.user);
 
     newSocket = io.connect("http://localhost:5000");
     let localStream;
 
+    //방에 입장했을 경우. 같은 방에 있는 유저들의 정보를 가져온다.
     newSocket.on("all_users", (allUsers) => {
       let len = allUsers.length;
 
+      //각각의 유저에대한 소켓연결을 만드는 부분.
       for (let i = 0; i < len; i++) {
         createPeerConnection(
           allUsers[i].id,
@@ -81,6 +42,9 @@ function RoomPage(props) {
           newSocket,
           localStream
         );
+
+        //연결을 만들고 각 유저에 대해서 offer와 answer를 주고 받아서
+        // 소켓연결을 완성한다 (유저의 길이 만큼 반복문을 돌면서 각각 모두 연결 - Peer to Peer )
         let pc = pcs[allUsers[i].id];
         if (pc) {
           pc.createOffer({
@@ -104,6 +68,7 @@ function RoomPage(props) {
       }
     });
 
+    //들어온 유저에게 offer를 받아서 연결을 이어가는 부분.
     newSocket.on("getOffer", (data) => {
       console.log("get offer");
       createPeerConnection(
@@ -122,6 +87,7 @@ function RoomPage(props) {
               offerToReceiveAudio: true,
             })
               .then((sdp) => {
+                //sdp는 연결하고자 하는 peer간의 미디어와 네트워크 정보를 이해하기위해 사용.
                 console.log("create answer success");
                 pc.setLocalDescription(new RTCSessionDescription(sdp));
                 newSocket.emit("answer", {
@@ -144,7 +110,6 @@ function RoomPage(props) {
       if (pc) {
         pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
       }
-      //console.log(sdp);
     });
 
     newSocket.on("getCandidate", (data) => {
@@ -162,10 +127,11 @@ function RoomPage(props) {
       console.log(data.id);
       delete pcs[data.id];
       setUsers((oldUsers) => oldUsers.filter((user) => user.id !== data.id));
+      //유저가 나가면 연결을 끊고 현재방에대한 유저를 담고있는
+      //Users도 새롭게 갱신해준다.
     });
 
-    setSocket(newSocket);
-
+    //내 비디오에 대한 정보를 가져온다.
     navigator.mediaDevices
       .getUserMedia({
         audio: true,
@@ -179,6 +145,7 @@ function RoomPage(props) {
 
         localStream = stream;
 
+        //내 비디오정보를 가져오고 join_room을 하면 그때부터 소켓연결이 시작 됨.
         newSocket.emit("join_room", {
           room: roomName,
           email: user.email,
@@ -192,14 +159,11 @@ function RoomPage(props) {
       await axios
         .get("/api/users/auth")
         .then((response) => setUser(response.data));
-    }
+    } //DB에 담긴 나의 정보를 가져온다.
   }, []);
 
   if (user.isAuth) {
-    //if (user.role === 1) questionBtn.current.hidden = true;
-
-    // const socket = io("http://localhost:5000");
-    // socket.emit("join_room", roomName, user.name);
+    //내 정보가 잘 가져와졌다면.
 
     console.log(`${roomName}방에 입장하셨습니다.`);
     let body = {
@@ -209,60 +173,9 @@ function RoomPage(props) {
     axios.post("/api/rooms/make", body).then((response) => {
       console.log(response);
     }); //방을 DB에 생성
-
-    // async function getCameras() {
-    //   try {
-    //     const devices = await navigator.mediaDevices.enumerateDevices();
-    //     const cameras = devices.filter(
-    //       (device) => device.kind === "videoinput"
-    //     );
-    //     const currentCamera = myStream.getVideoTracks()[0];
-    //     cameras.forEach((camera) => {
-    //       const option = document.createElement("option");
-    //       option.value = camera.deviceId;
-    //       option.innerText = camera.label;
-    //       if (currentCamera.label === camera.label) {
-    //         option.selected = true;
-    //       }
-    //       selectRef.current.appendChild(option);
-    //     });
-    //   } catch (e) {
-    //     console.log(e);
-    //   }
-    // }
-
-    // async function getMedia(deviceId) {
-    //   const initialConstrains = {
-    //     audio: true,
-    //     video: { facingMode: "user" },
-    //   };
-    //   const cameraConstrains = {
-    //     audio: true,
-    //     video: { deviceId: { exact: deviceId } },
-    //   };
-    //   try {
-    //     myStream = await navigator.mediaDevices.getUserMedia(
-    //       deviceId ? cameraConstrains : initialConstrains
-    //     );
-    //     videoRef.current.srcObject = myStream;
-    //     if (!deviceId) {
-    //       await getCameras();
-    //     }
-    //   } catch (e) {
-    //     console.log(e);
-    //   }
-    // }
-
-    // async function initCall() {
-    //   await getMedia();
-    //   makeConnection(); //연결을 시작해주는 함수
-    // }
-
-    // initCall();
-
-    // Socket Code
   }
 
+  //peer간 연결을 만드는 함수.
   const createPeerConnection = (socketID, email, newSocket, localStream) => {
     let pc = new RTCPeerConnection(pc_config);
 
@@ -305,119 +218,26 @@ function RoomPage(props) {
     } else {
       console.log("no local stream");
     }
-
     // return pc
     return pc;
   };
 
-  //     socket.on("welcome", async (userName) => {
-  //       console.log(`${roomName}방에 ${userName}님이 입장하셨습니다.`);
-  //       // myDataChannel = myPeerConnection.createDataChannel("chat");
-  //       // myDataChannel.addEventListener("message", console.log)
-  //       //다른 피어들은 데이터 채널을 만들 필요없이 EventListener를 만들면 된다.
-
-  //       const offer = await myPeerConnection.createOffer();
-  //       myPeerConnection.setLocalDescription(offer);
-  //       //   socket.emit("offer", offer, roomName);
-  //     }); // Peer A
-
-  //     socket.on("all_users", async (allUsers) => {
-  //       let len = allUsers.length; //나를 제외한 유저의 수
-  //       console.log(len);
-  //       for (let i = 0; i < len; i++) {
-  //         pcs[allUsers.id].offer = await myPeerConnection.createOffer();
-  //         const offer = await myPeerConnection.createOffer();
-  //         console.log(offer);
-  //         myPeerConnection.setLocalDescription(offer);
-  //         console.log(myPeerConnection);
-  //         socket.emit("offer", offer, roomName, socket.id, allUsers.id);
-  //       }
-  //     });
-
-  //     socket.on("offer", async (offer, sendId, receiveId) => {
-  //       // myPeerConnection.addEventListener("datachannel", (event) => {
-  //       // myDataChannel = event.channel;
-  //       // myDataChannel.addEventListener("message", console.log)
-  //       //     })
-  //       myPeerConnection.setRemoteDescription(offer);
-  //       const answer = await myPeerConnection.createAnswer();
-  //       myPeerConnection.setLocalDescription(answer);
-  //       socket.emit("answer", answer, roomName, sendId, receiveId);
-  //     }); // Peer B
-
-  //     socket.on("answer", (answer, sendId, receiveId) => {
-  //       myPeerConnection.setRemoteDescription(answer);
-  //     });
-
-  //     socket.on("ice", (ice) => {
-  //       myPeerConnection.addIceCandidate(ice);
-  //     });
-
-  //     function makeConnection() {
-  //       myPeerConnection = new RTCPeerConnection({
-  //         iceServers: [
-  //           {
-  //             urls: [
-  //               "stun:stun.l.google.com:19302",
-  //               "stun:stun1.l.google.com:19302",
-  //               "stun:stun2.l.google.com:19302",
-  //               "stun:stun3.l.google.com:19302",
-  //               "stun:stun4.l.google.com:19302",
-  //             ],
-  //           },
-  //         ],
-  //       });
-  //       myPeerConnection.addEventListener("icecandidate", handleIce);
-  //       myPeerConnection.addEventListener("addstream", handleAddStream);
-  //       myStream
-  //         .getTracks()
-  //         .forEach((track) => myPeerConnection.addTrack(track, myStream));
-  //     }
-
-  //     function handleIce(data) {
-  //       socket.emit("ice", data.candidate, roomName);
-  //     }
-
-  //     function handleAddStream(data) {
-  //       peerFaceRef.current.srcObject = data.stream;
-  //     }
-  //   }
-
-  //   const onChange = (event) => {
-  //     setTest(event.target.value);
-  //   };
-
-  //   const handleMuteClick = () => {
-  //     myStream
-  //       .getAudioTracks()
-  //       .forEach((track) => (track.enabled = !track.enabled));
-  //     if (muted) {
-  //       muteBtn.current.innerText = "Mute";
-  //       muted = false;
-  //     } else {
-  //       muteBtn.current.innerText = "Unmute";
-  //       muted = true;
-  //     }
-  //   };
-  //   const handleCameraClick = () => {
-  //     myStream
-  //       .getVideoTracks()
-  //       .forEach((track) => (track.enabled = !track.enabled));
-  //     if (cameraOff) {
-  //       cameraBtn.current.innerText = "Turn Camera Off";
-  //       cameraOff = false;
-  //     } else {
-  //       cameraBtn.current.innerText = "Turn Camera On";
-  //       cameraOff = true;
-  //     }
-  //   };
-
+  //선택적 카메라공유 (아직 구현 못함)
   function cameraTurn(targetId) {
     pcs[targetId].close();
     delete pcs[targetId];
     setUsers((oldUsers) => oldUsers.filter((user) => user.id !== targetId));
   }
   //user.id 이용하면 될거같음
+
+  //내카메라를 전체 유저에게 안보이게 설정하는 기능
+  function handleCamera() {
+    if (myCameraOn) localVideoRef.current.srcObject.getVideoTracks()[0].stop();
+    else console.log("카메라켜기");
+    myCameraOn.current = !myCameraOn.current;
+    console.log(myCameraOn);
+    console.log(localVideoRef.current.srcObject);
+  }
   return (
     <div>
       <video
@@ -431,6 +251,9 @@ function RoomPage(props) {
         ref={localVideoRef}
         autoPlay
       ></video>
+      <button onClick={handleCamera}>
+        {myCameraOn ? "카메라 끄기" : "카메라 켜기"}
+      </button>
       {users.map((user, index) => {
         return (
           <div>
@@ -445,37 +268,3 @@ function RoomPage(props) {
 }
 
 export default RoomPage;
-
-/* <div>
-<div className="myCameraBox">
-  <video
-    ref={videoRef}
-    autoPlay
-    playsInline
-    width="400"
-    height="400"
-  ></video>
-  <select ref={selectRef}></select>
-  <button ref={muteBtn} onClick={handleMuteClick}>
-    Mute
-  </button>
-  <button ref={cameraBtn} onClick={handleCameraClick}>
-    Turn Camera Off
-  </button>
-  <button ref={questionBtn} onClick={handleOpen}>
-    Question
-  </button>
-</div>
-<button onClick={() => console.log("앙")}>눌러보세요</button>
-<input onChange={onChange} value={test} />
-
-<div className="peerCameraBox">
-  <video
-    ref={peerFaceRef}
-    autoPlay
-    playsInline
-    width="400"
-    height="400"
-  ></video>
-</div>
-</div> */
