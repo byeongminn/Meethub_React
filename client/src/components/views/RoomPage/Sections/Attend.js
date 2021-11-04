@@ -11,6 +11,8 @@ function Attend(props) {
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
     const [attBook, setAttBook] = useState([]);
+    const [counter, setCounter] = useState(0);
+    const [totalCounter, setTotalCounter] = useState(0);
 
     const onChange = (event) => {
         const {
@@ -77,15 +79,20 @@ function Attend(props) {
             check.push({ name: v.name, email: v.email, attend: false });
         })
 
+        let cnt = 0;
+
         participantList.map((v, i) => {
             check.map((attBook) => {
                 if (v.user.email === attBook.email) {
                     attBook.attend = true;
+                    cnt++;
                 }
             })
         })
 
         setAttBook(check);
+        setCounter(cnt);
+        setTotalCounter(attendanceBook.length);
     }
 
     const renderAttend = attBook.map((v, i) => {
@@ -115,7 +122,7 @@ function Attend(props) {
         return <div key={i}>
             <span style={{ display: 'inline-block', width: '30%' }}>{v.name}</span>
             <span style={{ display: 'inline-block', width: '30%' }}>{v.email}</span>
-            <span style={{ display: 'inline-block', width: '30%' }}>{v.attend ? <CheckOutlined style={{ color: 'green' }} /> : <CloseOutlined style={{ color: 'red' }} />}</span>
+            <span style={{ display: 'inline-block', width: '30%' }}>{v.attend ? <CheckOutlined style={{ color: 'green' }} /> : ''}</span>
             <button style={{ display: 'inline-block' }} onClick={onAttBookDelete}>삭제</button>
         </div>
     })
@@ -127,10 +134,22 @@ function Attend(props) {
         })
     }, [])
 
+    useEffect(() => {
+        const attendanceBook = props.room.attendanceBook;
+
+        const check = new Array();
+        attendanceBook.map((v) => {
+            check.push({ name: v.name, email: v.email, attend: false });
+        })
+
+        setAttBook(check);
+        setTotalCounter(attendanceBook.length);
+    }, [])
+
     return (
         <div>
             {props.user._id === props.room.creator._id &&
-                <button onClick={handleOpenAttendModal}>출결 확인</button>
+                <button onClick={handleOpenAttendModal}>출석부</button>
             }
             <Modal
                 style={{ textAlign: 'center' }}
@@ -148,6 +167,8 @@ function Attend(props) {
                 <span style={{ display: 'inline-block', width: '30%' }}>출결</span>
                 <hr />
                 {renderAttend}
+                <br />
+                <span>출석 인원 : {counter} / {totalCounter}</span>
             </Modal>
             
             <Modal
