@@ -12,6 +12,7 @@ function LandingPage(props) {
     const [openMakeModal, setOpenMakeModal] = useState(false);
     const [privateRoom, setPrivateRoom] = useState({});
     const [openJoinModal, setOpenJoinModal] = useState(false);
+    
 
     useEffect(() => {
         axios.get('/api/rooms/getRooms')
@@ -71,7 +72,14 @@ function LandingPage(props) {
                             <Card style={{ position: 'relative', cursor: 'pointer' }}
                                 onClick={() => {
                                     if (room.roomPassword) {
+                                        room.attendanceBook.map((v,i)=>{
+                                            if(props.user.email === v.email){
+                                                props.history.push(`/rooms/${room._id}`);
+                                                console.log(v.email);
+                                            }
+                                        })
                                         handleOpenJoinModal(room);
+
                                     } else {
                                         props.history.push(`/rooms/${room._id}`);
                                     }
