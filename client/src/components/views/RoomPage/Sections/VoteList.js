@@ -66,7 +66,7 @@ function VoteList(props) {
                         setOpenVoteRegisterModal(false);
                     }, 1000);
                 } else {
-                    message.error('투표를 등록하는 실패했습니다.');
+                    message.error('투표를 등록하는데 실패했습니다.');
                 }
             })
     }

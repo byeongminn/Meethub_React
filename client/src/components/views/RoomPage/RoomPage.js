@@ -5,6 +5,7 @@ import { io } from "socket.io-client";
 import Attend from './Sections/Attend';
 import ChatList from './Sections/ChatList';
 import ParticipantList from './Sections/ParticipantList';
+import QuestionList from './Sections/QuestionList';
 import ShareDisplay from './Sections/ShareDisplay';
 import VoteList from './Sections/VoteList';
 
@@ -57,6 +58,7 @@ function RoomPage(props) {
                     </Tabs>
                     <Attend socket={socket} roomName={room.roomName} room={room} user={props.user} />
                     <VoteList room={room} user={props.user}/>
+                    <QuestionList room={room} user={props.user}/>
                 </div>
             }
             <button onClick={() => {

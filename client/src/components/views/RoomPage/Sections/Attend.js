@@ -10,22 +10,9 @@ function Attend(props) {
     const [openAttendModal, setOpenAttendModal] = useState(false);
     const [openAttendRegisterModal, setOpenAttendRegisterModal] = useState(false);
     const [form] = Form.useForm();
-    const [email, setEmail] = useState("");
-    const [name, setName] = useState("");
     const [attBook, setAttBook] = useState([]);
     const [counter, setCounter] = useState(0);
     const [totalCounter, setTotalCounter] = useState(0);
-
-    const onChange = (event) => {
-        const {
-            target: { name, value }
-        } = event;
-        if (name === 'name') {
-            setName(value);
-        } else if (name === 'email') {
-            setEmail(value);
-        }
-    }
 
     const handleOpenAttendModal = () => {
         setOpenAttendModal(true);

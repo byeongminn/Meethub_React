@@ -11,6 +11,8 @@ const { User } = require("./server/models/User");
 const { auth } = require('./server/middleware/auth');
 const { Room } = require("./server/models/Room");
 const { Vote } = require("./server/models/Vote");
+const { Question } = require("./server/models/Question");
+const { Answer } = require("./server/models/Answer");
 
 app.use(express.json());
 app.use(cookieParser());
@@ -228,6 +230,83 @@ app.post('/api/votes/voteUpdate', (req, res) => {
     if (err) return res.json({ success: false, err });
     return res.json({ success: true });
   })
+})
+
+// ===================================================
+//                      QUESTION
+// ===================================================
+
+app.post('/api/questions/register', (req, res) => {
+  const question = new Question(req.body);
+
+  question.save((err, questionInfo) => {
+    if (err) return res.json({ success: false, err });
+    return res.json({ success: true })
+  })
+})
+
+app.post('/api/questions/getQuestions', (req, res) => {
+  Question.find({ room: req.body.roomId })
+    .populate('room')
+    .populate('questioner')
+    .exec((err, questions) => {
+      if (err) return res.json({ success: false, err });
+      res.json({ success: true, questions });
+    })
+})
+
+app.post('/api/questions/questionDelete', (req, res) => {
+  Question.findOneAndDelete({ _id: req.body.questionId })
+    .exec((err, question) => {
+      if (err) return res.json({ success: false, err });
+      return res.json({ success: true });
+    })
+})
+
+app.post('/api/questions/answered', (req, res) => {
+  Question.findOneAndUpdate({ _id: req.body.question }, { answered: true }, (err, question) => {
+    if (err) return res.json({ success: false, err });
+    return res.json({ success: true });
+  })
+})
+
+// ===================================================
+//                      ANSWER
+// ===================================================
+
+app.post('/api/answers/register', (req, res) => {
+  const answer = new Answer(req.body);
+
+  answer.save((err, answerInfo) => {
+    if (err) return res.json({ success: false, err });
+    return res.json({ success: true })
+  })
+})
+
+app.post('/api/answers/getAnswers', (req, res) => {
+  Answer.find({ question: req.body.questionId })
+    .populate('question')
+    .populate('answerer')
+    .exec((err, answers) => {
+      if (err) return res.json({ success: false, err });
+      res.json({ success: true, answers });
+    })
+})
+
+app.post('/api/answers/answerDelete', (req, res) => {
+  Answer.findOneAndDelete({ _id: req.body.answerId })
+    .exec((err, answer) => {
+      if (err) return res.json({ success: false, err });
+      return res.json({ success: true });
+    })
+})
+
+app.post('/api/answers/answersDelete', (req, res) => {
+  Answer.deleteMany({ question: req.body.questionId })
+    .exec((err, answers) => {
+      if (err) return res.json({ success: false, err });
+      return res.json({ success: true });
+    })
 })
 
 httpServer.listen(5000, function () {
