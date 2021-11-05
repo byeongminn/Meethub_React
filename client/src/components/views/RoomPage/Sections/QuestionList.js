@@ -42,6 +42,11 @@ function QuestionList(props) {
         form.resetFields();
     }
 
+    const closeQuestionRegisterModal = () => {
+        setOpenQuestionRegisterModal(false);
+        onReset();
+    }
+
     const onQuestionRegister = (values) => {
         const variables = {
             room: props.room._id,
@@ -147,7 +152,7 @@ function QuestionList(props) {
                     })
                 }}
                 cancelText='닫기'
-                onCancel={() => setOpenQuestionRegisterModal(false)}
+                onCancel={closeQuestionRegisterModal}
             >
                 <Form form={form} name='question'>
                     <Form.Item

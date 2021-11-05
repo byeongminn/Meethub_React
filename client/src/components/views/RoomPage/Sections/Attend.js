@@ -28,6 +28,11 @@ function Attend(props) {
 
     const handleCloseAttendRegisterModal = () => {
         setOpenAttendRegisterModal(false);
+        onReset();
+    }
+
+    const onReset = () => {
+        form.resetFields();
     }
 
     const onAddEmail = (values) => {
@@ -49,6 +54,7 @@ function Attend(props) {
                     refreshAttendanceBook();
                     setTimeout(() => {
                         setOpenAttendRegisterModal(false);
+                        onReset();
                     }, 1000);
                 } else {
                     message.error("출석부 수정에 실패했습니다.");
@@ -178,6 +184,7 @@ function Attend(props) {
             <Modal
                 title="출결부 명단 추가"
                 visible={openAttendRegisterModal}
+                okText='등록'
                 onOk={() => {
                     form
                         .validateFields()
@@ -188,6 +195,7 @@ function Attend(props) {
                             
                         })
                 }}
+                cancelText='닫기'
                 onCancel={handleCloseAttendRegisterModal}
             >
                 <Form

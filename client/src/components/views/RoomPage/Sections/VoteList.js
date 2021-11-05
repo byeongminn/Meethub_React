@@ -34,6 +34,15 @@ function VoteList(props) {
         })
     }
 
+    const onReset = () => {
+        form.resetFields();
+    }
+
+    const closeVoteRegisterModal = () => {
+        setOpenVoteRegisterModal(false);
+        onReset();
+    }
+
     const onChange = (event) => {
         const {
             target: { name, value }
@@ -64,6 +73,7 @@ function VoteList(props) {
                     getVotes();
                     setTimeout(() => {
                         setOpenVoteRegisterModal(false);
+                        onReset();
                     }, 1000);
                 } else {
                     message.error('투표를 등록하는데 실패했습니다.');
@@ -172,7 +182,7 @@ function VoteList(props) {
                     })
                 }}
                 cancelText='닫기'
-                onCancel={() => setOpenVoteRegisterModal(false)}
+                onCancel={closeVoteRegisterModal}
             >
                 <Form form={form} name='vote'>
                     <Form.Item
