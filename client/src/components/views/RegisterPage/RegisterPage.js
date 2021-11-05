@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { message } from 'antd';
 
 function RegisterPage(props) {
     const [name, setName] = useState("");
@@ -26,7 +27,7 @@ function RegisterPage(props) {
         event.preventDefault();
 
         if (password !== confirmPassword) {
-            return alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            return message.error("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
         }
 
         let body = {
@@ -37,11 +38,10 @@ function RegisterPage(props) {
 
         axios.post("/api/users/register", body)
             .then(response => {
-                console.log(response.data);
                 if (response.data.success) {
                     props.history.push("/login");
                 } else {
-                    alert("Failed to sign up.");
+                    message.error(response.data.message);
                 }
             })
     }
@@ -52,17 +52,17 @@ function RegisterPage(props) {
             , width: "100%", height: "100vh"
         }}>
             <form style={{ display: "flex", flexDirection: "column" }} onSubmit={onSubmit}>
-                <label>Name</label>
+                <label>이름</label>
                 <input name="name" type="text" value={name} onChange={onChange} />
-                <label>Email</label>
+                <label>이메일</label>
                 <input name="email" type="email" value={email} onChange={onChange} />
-                <label>Password</label>
+                <label>비밀번호</label>
                 <input name="password" type="password" value={password} onChange={onChange} />
-                <label>Confirm Password</label>
+                <label>비밀번호 확인</label>
                 <input name="confirmPassword" type="password" value={confirmPassword} onChange={onChange} />
                 <br />
                 <button type="submit">
-                    로그인
+                    회원가입
                 </button>
             </form>
         </div>

@@ -15,7 +15,7 @@ function App() {
           <Route exact path="/" component={Auth(LandingPage, null)} />
           <Route exact path="/login" component={Auth(LoginPage, false)} />
           <Route exact path="/register" component={Auth(RegisterPage, false)} />
-          <Route path="/rooms/:roomName" component={Auth(RoomPage, true)} />
+          <Route path="/rooms/:roomId" component={Auth(RoomPage, true)} />
         </Switch>
       </Router>
     </div>

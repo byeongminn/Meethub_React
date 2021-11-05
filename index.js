@@ -10,7 +10,7 @@ const cors = require("cors");
 const { User } = require("./server/models/User");
 const { auth } = require('./server/middleware/auth');
 const { Room } = require("./server/models/Room");
-const { Chat } = require("./server/models/Chat");
+const { Vote } = require("./server/models/Vote");
 
 app.use(express.json());
 app.use(cookieParser());
@@ -82,6 +82,17 @@ app.get("/api/users/logout", auth, (req, res) => {
   })
 })
 
+app.post('/api/users/getUserFromEmail', (req, res) => {
+  User.findOne({ email: req.body.email }, (err, user) => {
+    if (err) return res.json({ success: false, err });
+    return res.status(200).json({ success: true, user });
+  })
+})
+
+// ===================================================
+//                      WebRTC
+// ===================================================
+
 const httpServer = http.createServer(app);
 const wsServer = SocketIO(httpServer, {
   cors: {
@@ -89,30 +100,133 @@ const wsServer = SocketIO(httpServer, {
   }
 });
 
+const maximum = 6;
+let users = {};
+let socketToRoom = {};
+
 wsServer.on("connection", (socket) => {
-  socket.on("join_room", (roomName, userName) => {
-    socket.join(roomName);
-    socket.to(roomName).emit("welcome", userName);
+  socket.on("join_room", (data) => {
+    if (users[data.roomName]) {
+      const length = users[data.roomName].length;
+      if (length === maximum) {
+        socket.to(socket.id).emit('room_full');
+        return;
+      }
+      users[data.roomName].push({ user: data.user, socketId: socket.id });
+    } else {
+      users[data.roomName] = [{ user: data.user, socketId: socket.id }];
+    }
+    socketToRoom[socket.id] = data.roomName;
+/*     console.log(users[data.roomName]);
+    console.log(socketToRoom); */
+    socket.join(data.roomName);
+    wsServer.to(data.roomName).emit("welcome", data.user.name);
   });
-  socket.on("offer", (offer, roomName) => {
-    socket.to(roomName).emit("offer", offer);
+  socket.on('participants', (roomName) => {
+    wsServer.to(roomName).emit('participants', users[roomName]);
   })
-  socket.on("answer", (answer, roomName) => {
-    socket.to(roomName).emit("answer", answer);
+  socket.on("send_message", (roomName, chat) => {
+    wsServer.to(roomName).emit("receive_message", chat);
   })
-  socket.on("ice", (ice, roomName) => {
-    socket.to(roomName).emit("ice", ice);
+  socket.on('disconnect', () => {
+    const roomName = socketToRoom[socket.id];
+    let room = users[roomName];
+    if (room) {
+      room = room.filter(user => user.socketId !== socket.id);
+      users[roomName] = room;
+    }
+    socket.to(roomName).emit('participants', users[roomName]);
   })
 })
 
-app.post("/api/rooms/make", (req, res) => {
-  const room = new Room(req.body);
+// ===================================================
+//                      ROOM
+// ===================================================
 
-  room.save((err, room) => {
-    if (err) return res.json({ success: false, err });
-    return res.status(200).json({
-      success: true,
+app.post("/api/rooms/make", (req, res) => {
+  Room.findOne({ roomName: req.body.roomName })
+    .exec((err, roomInfo) => {
+      if (roomInfo) return res.json({ success: false, exist: true, message: '이미 존재하는 방입니다.' });
+      else {
+        const room = new Room(req.body);
+      
+        room.save((err, room) => {
+          if (err) return res.json({ success: false, exist: false, err });
+          return res.status(200).json({
+            success: true, exist: false, roomId: room._id
+          })
+        })
+      }
     })
+})
+
+app.get('/api/rooms/getRooms', (req, res) => {
+  Room.find()
+    .populate('creator')
+    .exec((err, rooms) => {
+      if (err) return res.json({ success: false, err });
+      res.json({ success: true, rooms });
+    })
+})
+
+app.post('/api/rooms/getRoom', (req, res) => {
+  Room.findOne({ _id: req.body.roomId })
+    .populate('creator')
+    .exec((err, room) => {
+      if (err) return res.json({ success: false, err });
+      res.json({ success: true, room });
+    })
+})
+
+app.post('/api/rooms/attBookUpdate', (req, res) => {
+  Room.findOneAndUpdate({ _id: req.body.roomId }, { attendanceBook: req.body.attendanceBook }, (err, room) => {
+    if (err) return res.json({ success: false, err });
+    return res.status(200).send({ success: true, room });
+  })
+})
+
+// ===================================================
+//                      VOTE
+// ===================================================
+
+app.post('/api/votes/register', (req, res) => {
+  const vote = new Vote(req.body);
+
+  vote.save((err, voteInfo) => {
+    if (err) return res.json({ success: false, err });
+    return res.json({ success: true })
+  })
+})
+
+app.post('/api/votes/getVotes', (req, res) => {
+  Vote.find({ room: req.body.roomId })
+    .populate('room')
+    .populate('creator')
+    .exec((err, votes) => {
+      if (err) return res.json({ success: false, err });
+      res.json({ success: true, votes });
+    })
+})
+
+app.post('/api/votes/voteClosing', (req, res) => {
+  Vote.findOneAndUpdate({ _id: req.body.voteId }, { available: false }, (err, vote) => {
+    if (err) return res.json({ success: false, err });
+    return res.status(200).send({ success: true, vote });
+  })
+})
+
+app.post('/api/votes/voteDelete', (req, res) => {
+  Vote.findOneAndDelete({ _id: req.body.voteId })
+    .exec((err, vote) => {
+      if (err) return res.json({ success: false, err });
+      return res.json({ success: true });
+    })
+})
+
+app.post('/api/votes/voteUpdate', (req, res) => {
+  Vote.findOneAndUpdate({ _id: req.body.voteId }, { options: req.body.options, voted: req.body.voted }, (err, vote) => {
+    if (err) return res.json({ success: false, err });
+    return res.json({ success: true });
   })
 })
 
