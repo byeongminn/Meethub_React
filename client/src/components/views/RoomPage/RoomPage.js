@@ -8,6 +8,8 @@ import ParticipantList from './Sections/ParticipantList';
 import QuestionList from './Sections/QuestionList';
 import ShareDisplay from './Sections/ShareDisplay';
 import VoteList from './Sections/VoteList';
+import effectSound from './Sections/effectSound';
+import ES from './audios/ES.mp3';
 
 const { TabPane } = Tabs;
 
@@ -19,6 +21,7 @@ function RoomPage(props) {
     const variables = {
         roomId
     }
+    const es = effectSound(ES, 1); 
 
     useEffect(() => {
         axios.post('/api/rooms/getRoom', variables)
@@ -41,6 +44,7 @@ function RoomPage(props) {
         socket.on("welcome", (userName) => {
             message.info(`${room.roomName}에 ${userName}님이 입장하셨습니다.`);
         })
+        es.play();
     }
 
     return (
@@ -64,7 +68,9 @@ function RoomPage(props) {
             <button onClick={() => {
                 socket.disconnect();
                 props.history.push('/');
+                es.play();
             }}>나가기</button>
+           
         </div>
     )
 }
