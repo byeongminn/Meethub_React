@@ -4,6 +4,7 @@ import MakeRoom from './Sections/MakeRoom';
 import { Avatar, Card, Col, message, Row } from 'antd';
 import { LockFilled } from '@ant-design/icons';
 import JoinPrivateRoom from './Sections/JoinPrivateRoom';
+import './LandingPage.css'
 
 const { Meta } = Card;
 
@@ -57,18 +58,22 @@ function LandingPage(props) {
         <div style={{
             width: '85%', margin: '3rem auto'
         }}>
-            <h2>방목록</h2>
-            <button onClick={() => window.location.replace('/')}>새로고침</button>
-            <button onClick={onClick}>로그아웃</button>
-            <button onClick={handleOpenMakeModal}>방 만들기</button>
+            <div className="mainTitleDiv">
+            <h2 className="mainRoomTitle">MeetHub</h2>
+            </div>
+            <div className="mainButtons">
+                <button onClick={() => window.location.replace('/')}>새로고침</button>
+                <button onClick={onClick}>로그아웃</button>
+                <button onClick={handleOpenMakeModal}>방 만들기</button>
+            </div>
             <MakeRoom {...props} visible={openMakeModal} onCancel={handleCloseMakeModal} />
-            <hr />
+            <div className="mainLine"/>
             <Row gutter={[16, 16]}>
                 {openJoinModal ? <JoinPrivateRoom {...props} room={privateRoom} visible={privateRoom} onCancel={handleCloseJoinModal}/> : ''}
                 {rooms.length > 0 ?
                     rooms.map((room, index) => (
                         <Col key={index} lg={6} md={8} xs={24}>
-                            <Card style={{ position: 'relative', cursor: 'pointer' }}
+                            <Card className="mainCard" style={{ position: 'relative', cursor: 'pointer' }}
                                 onClick={() => {
                                     if (room.roomPassword) {
                                         handleOpenJoinModal(room);
@@ -78,8 +83,8 @@ function LandingPage(props) {
                                 }}
                             >
                                 {room.roomPassword && <LockFilled style={{ position: 'absolute', right: 30 }} />}
-                                <div style={{ width: '100%', height: '150px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                    <span style={{ color: 'black', fontSize: '2rem', fontWeight: '600' }}>{room.roomName}</span>
+                                <div className="mainBoxHead" style={{ width: '100%', height: '150px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                    <span className="mainBoxHeadSpan" style={{ color: 'white', fontSize: '2rem', fontWeight: '600' }}>{room.roomName}</span>
                                 </div>
                                 <br />
                                 <Meta

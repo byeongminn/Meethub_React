@@ -1,0 +1,75 @@
+.mainRoomTitle{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 90px;
+    font-weight: bold;
+    border-radius: 30px;
+    width: 600px;
+    color: #4583c3;
+}
+
+.mainTitleDiv{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mainButtons{
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px
+}
+
+.mainButtons > button{
+    display: flex;
+    border: 0;
+    font-size: 20px;
+    padding: 3px 12px 2px 12px;
+    color: #83a5c9;
+    background: #ffffff;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.mainLine{
+    height: 20px;
+    border-top: 2px solid #0a479361;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    background: linear-gradient(
+        180deg, rgba(181, 180, 181, 0.5) 0%, rgba(181, 180, 181, 0) 50%);
+            opacity: 0.5;
+}
+
+.mainCard{
+    border: 1px solid #4583c354;
+    border-radius: 30px;
+}
+
+.mainBoxHead{
+    background: #78b9f3;
+    border-radius: 19px;
+}
+
+.mainBoxHeadSpan{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.ant-card-meta-description{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.anticon{
+    top:30px;
+    right: 40px;
+}
+
+.anticon-lock{
+    top:30px;
+    right: 40px;
+    position:absolute;
+}
