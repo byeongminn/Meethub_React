@@ -8,6 +8,19 @@ import ChatList from './Sections/ChatList';
 import ParticipantList from './Sections/ParticipantList';
 import ShareDisplay from './Sections/ShareDisplay';
 import VoteList from './Sections/VoteList';
+import "./RoomPage.css"
+
+//img
+import video from '../../../icons/video-player.png'
+import information from '../../../icons/information.png'
+import abstract from '../../../icons/abstract.png'
+import gear from '../../../icons/gear.png'
+import mic from '../../../icons/mic.png'
+import phone from '../../../icons/phone-call.png'
+import vote from '../../../icons/vote.png'
+import more from '../../../icons/more.png'
+import account from '../../../icons/account.png'
+
 
 const { TabPane } = Tabs;
 
@@ -261,32 +274,132 @@ function RoomPage(props) {
         console.log(myCameraOn);
         console.log(localVideoRef.current.srcObject);
     }
+
+    function optionModal(){
+        let opModal = document.getElementById("optionModal")
+        console.log("op" , opModal.style.display)
+        if(opModal.style.display === "none" || !opModal.style.display){
+            opModal.style.display = "block"
+        }
+        else {
+            opModal.style.display = "none"
+        }
+    }
+
     return (
-        <div>
-            <video
-                style={{
-                    width: 240,
-                    height: 240,
-                    margin: 5,
-                    backgroundColor: "black",
-                }}
-                muted
-                ref={localVideoRef}
-                autoPlay
-            ></video>
-            <button onClick={handleCamera}>
-                {myCameraOn ? "카메라 끄기" : "카메라 켜기"}
-            </button>
-            {users.map((user, index) => {
-                return (
+        <div className="rooms">
+            <div className="roomHead">
+                <span>MeetHub</span>
+            </div>
+            <div className="roomBody">
+                <div className="roomVideoDiv">
                     <div>
-                        <Video key={index} email={user.email} stream={user.stream} />
-                        {console.log(user)}
-                        <button onClick={() => cameraTurn(user.id)}>화상연결해제</button>
+                        <video
+                            style={{
+                                width: 300,
+                                height: 300,
+                                margin: 5,
+                                backgroundColor: "gray",
+                            }}
+                            muted
+                            ref={localVideoRef}
+                            autoPlay
+                        ></video>
+                        <video
+                            style={{
+                                width: 300,
+                                height: 300,
+                                margin: 5,
+                                backgroundColor: "gray",
+                            }}
+                            muted
+                            ref={localVideoRef}
+                            autoPlay
+                        ></video>
                     </div>
-                );
-            })}
-            <ShareDisplay />
+                    <div>
+                        <video
+                            style={{
+                                width: 300,
+                                height: 300,
+                                margin: 5,
+                                backgroundColor: "gray",
+                            }}
+                            muted
+                            ref={localVideoRef}
+                            autoPlay
+                        ></video>
+                        <video
+                            style={{
+                                width: 300,
+                                height: 300,
+                                margin: 5,
+                                backgroundColor: "gray",
+                            }}
+                            muted
+                            ref={localVideoRef}
+                            autoPlay
+                        ></video>
+                    </div>
+
+                </div>
+                {/*채팅방 넣는 위치*/}
+                <div className="roomChat">
+                    <div className="roomExample">s
+
+                    </div>
+                </div>
+            </div>
+            <div className="roomFooter">
+                <div className="roomFooterIcons">
+                    <div className="cameraDiv ">
+                        {/*<img src={video}/>*/}
+                        <button className="micBtn">
+                            <img src={mic}/>
+                        </button>
+                        <button className="micBtn">
+                            <img src={phone}/>
+                        </button>
+                        <button className="cameraBtn" onClick={handleCamera} style={{backgronudImage:"{video}"}}>
+                            <img src={video}/>
+                            {/*{myCameraOn ? "카메라 끄기" : "카메라 켜기"}*/}
+                        </button>
+                    </div>
+                </div>
+                <div className="roomFooterOptions">
+
+                    <button id="optionBtn" className="micBtn" onClick={optionModal}>
+                        <div id="optionModal" className="optionModal">
+                            <button className="vote">
+                                <img src={vote}/>
+                            </button>
+                            <button className="information">
+                                <img src={information}/>
+                            </button>
+                            <button className="account">
+                                <img src={account}/>
+                            </button>
+                            <button className="abstract">
+                                <img src={abstract}/>
+                            </button>
+                            <button className="gear">
+                                <img src={gear}/>
+                            </button>
+                        </div>
+                        <img src={more}/>
+                    </button>
+                    {users.map((user, index) => {
+                        return (
+                            <div>
+                                <Video key={index} email={user.email} stream={user.stream} />
+                                {console.log(user)}
+                                <button onClick={() => cameraTurn(user.id)}>화상연결해제</button>
+                            </div>
+                        );
+                })}
+                <ShareDisplay />
+                </div>
+            </div>
             {/* {room.roomName && user.name &&
                 <div>
                     <Tabs defaultActiveKey='1'>
