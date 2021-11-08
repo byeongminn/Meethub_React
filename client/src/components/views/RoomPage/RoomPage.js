@@ -265,7 +265,6 @@ function RoomPage(props) {
     } else {
       console.log("no local stream");
     }
-<<<<<<< HEAD
 
     function optionModal(){
         let opModal = document.getElementById("optionModal")
@@ -410,73 +409,7 @@ function RoomPage(props) {
                 newSocket.disconnect();
                 props.history.push('/');
             }}>나가기</button> */}
-=======
-    // return pc
-    return pc;
-  };
 
-  //선택적 카메라공유 (아직 구현 못함)
-  function cameraTurn(targetId) {
-    pcs[targetId].close();
-    delete pcs[targetId];
-    setUsers((oldUsers) => oldUsers.filter((user) => user.id !== targetId));
-  }
-  //user.id 이용하면 될거같음
-
-  //내카메라를 전체 유저에게 안보이게 설정하는 기능
-  function handleCamera() {
-    if (myCameraOn) localVideoRef.current.srcObject.getVideoTracks()[0].stop();
-    else console.log("카메라켜기");
-    myCameraOn.current = !myCameraOn.current;
-    console.log(myCameraOn);
-    console.log(localVideoRef.current.srcObject);
-  }
-  console.log(newSocket, init);
-  return (
-    <div>
-      <video
-        style={{
-          width: 240,
-          height: 240,
-          margin: 5,
-          backgroundColor: "black",
-        }}
-        muted
-        ref={localVideoRef}
-        autoPlay
-      ></video>
-      <button onClick={handleCamera}>
-        {myCameraOn ? "카메라 끄기" : "카메라 켜기"}
-      </button>
-      {users.map((user, index) => {
-        return (
-          <div>
-            <Video key={index} email={user.email} stream={user.stream} />
-            {console.log(user)}
-            <button onClick={() => cameraTurn(user.id)}>화상연결해제</button>
-          </div>
-        );
-      })}
-      <ShareDisplay />
-      {init && room && user.name && (
-        <div>
-          <h1>hihi</h1>
-          <Tabs defaultActiveKey="1">
-            <TabPane tab="사용자" key="1">
-              <ParticipantList socket={newSocket} roomName={room._id} />
-            </TabPane>
-            <TabPane tab="채팅" key="2">
-              <ChatList socket={newSocket} user={user} roomName={room._id} />
-            </TabPane>
-          </Tabs>
-          <Attend
-            socket={newSocket}
-            roomName={room._id}
-            room={room}
-            user={props.user}
-          />
-          <VoteList room={room} user={props.user} />
->>>>>>> bbm
         </div>
       )}
       {init && (
