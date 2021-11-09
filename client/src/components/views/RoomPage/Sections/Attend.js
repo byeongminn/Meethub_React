@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Input, message, Modal, Form, Button } from "antd";
 import axios from 'axios';
 import { CheckOutlined } from '@ant-design/icons';
+import account from "../../../../icons/account.png";
 
 function Attend(props) {
     const [participantList, setParticipantList] = useState([]);
@@ -149,7 +150,7 @@ function Attend(props) {
     return (
         <div>
             {props.user._id === props.room.creator._id &&
-                <button onClick={handleOpenAttendModal}>출석부</button>
+                <button onClick={handleOpenAttendModal}><img src={account}/></button>
             }
             <Modal
                 style={{ textAlign: 'center' }}
