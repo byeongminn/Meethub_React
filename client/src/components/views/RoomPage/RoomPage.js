@@ -156,11 +156,11 @@ function RoomPage(props) {
         navigator.mediaDevices
             .getUserMedia({
                 audio: true,
-                video: false
-                // {
-                //     width: 240,
-                //     height: 240,
-                // },
+                video:
+                {
+                    width: 240,
+                    height: 240,
+                },
             })
             .then((stream) => {
                 if (localVideoRef.current) localVideoRef.current.srcObject = stream;
