@@ -40,7 +40,7 @@ function MakeRoom(props) {
                 .then(response => {
                     if (!response.data.exist) {
                         if (response.data.success) {
-                            props.history.push(`/rooms/${response.data.roomId}`);
+                            props.history.push({ pathname: `/rooms/${response.data.roomId}`, room: response.data.room, user: props.user});
                         } else {
                             message.error('양식에 맞게 입력해주세요.');
                         }

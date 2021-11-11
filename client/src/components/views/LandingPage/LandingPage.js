@@ -74,14 +74,14 @@ function LandingPage(props) {
                                     if (room.roomPassword) {
                                         room.attendanceBook.map((v,i)=>{
                                             if(props.user.email === v.email){
-                                                props.history.push(`/rooms/${room._id}`);
+                                                props.history.push({ pathname: `/rooms/${room._id}`, room, user: props.user});
                                                 console.log(v.email);
                                             }
                                         })
                                         handleOpenJoinModal(room);
 
                                     } else {
-                                        props.history.push(`/rooms/${room._id}`);
+                                        props.history.push({ pathname: `/rooms/${room._id}`, room, user: props.user});
                                     }
                                 }}
                             >

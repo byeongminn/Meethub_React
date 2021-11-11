@@ -123,6 +123,34 @@ wsServer.on("connection", (socket) => {
     console.log(socketToRoom); */
     socket.join(data.roomName);
     wsServer.to(data.roomName).emit("welcome", data.user.name);
+    const usersInThisRoom = users[data.roomName].filter(
+      (user) => user.socketId !== socket.id
+    ); //자신을 제외한 유저의 목록.
+
+    wsServer.sockets.to(socket.id).emit("all_users", usersInThisRoom);
+  });
+  socket.on("offer", (data) => {
+    //console.log(data.sdp);
+    socket.to(data.offerReceiveID).emit("getOffer", {
+      sdp: data.sdp,
+      offerSendID: data.offerSendID,
+      offerSendEmail: data.offerSendEmail,
+    });
+  });
+
+  socket.on("answer", (data) => {
+    //console.log(data.sdp);
+    socket
+      .to(data.answerReceiveID)
+      .emit("getAnswer", { sdp: data.sdp, answerSendID: data.answerSendID });
+  });
+
+  socket.on("candidate", (data) => {
+    //console.log(data.candidate);
+    socket.to(data.candidateReceiveID).emit("getCandidate", {
+      candidate: data.candidate,
+      candidateSendID: data.candidateSendID,
+    });
   });
   socket.on('participants', (roomName) => {
     wsServer.to(roomName).emit('participants', users[roomName]);
@@ -136,7 +164,12 @@ wsServer.on("connection", (socket) => {
     if (room) {
       room = room.filter(user => user.socketId !== socket.id);
       users[roomName] = room;
+      if (room.length === 0) {
+        delete users[roomName];
+        return;
+      }
     }
+    socket.to(roomName).emit("user_exit", { id: socket.id });
     socket.to(roomName).emit('participants', users[roomName]);
   })
 })
@@ -155,7 +188,7 @@ app.post("/api/rooms/make", (req, res) => {
         room.save((err, room) => {
           if (err) return res.json({ success: false, exist: false, err });
           return res.status(200).json({
-            success: true, exist: false, roomId: room._id
+            success: true, exist: false, room, roomId: room._id
           })
         })
       }
