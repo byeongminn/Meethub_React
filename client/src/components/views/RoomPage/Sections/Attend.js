@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Input, message, Modal, Form, Button, Space } from "antd";
 import axios from 'axios';
 import { CheckOutlined, ExclamationCircleOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import './Attend.css'
 
 const { confirm } = Modal;
 
@@ -129,7 +130,7 @@ function Attend(props) {
             <span style={{ display: 'inline-block', width: '30%' }}>{v.name}</span>
             <span style={{ display: 'inline-block', width: '30%' }}>{v.email}</span>
             <span style={{ display: 'inline-block', width: '30%' }}>{v.attend ? <CheckOutlined style={{ color: 'green' }} /> : ''}</span>
-            <button style={{ display: 'inline-block' }} onClick={showConfirm}>삭제</button>
+            <button className="deleteMemBtn" style={{  display: 'inline-block', border:'0' }} onClick={showConfirm}>삭제</button>
         </div>
     })
 
@@ -172,13 +173,18 @@ function Attend(props) {
                     <Button key="confirm" type="primary" onClick={onConfirm}>출결 확인</Button>
                 ]}
             >
-                <span style={{ display: 'inline-block', width: '30%' }}>이름</span>
-                <span style={{ display: 'inline-block', width: '30%' }}>이메일</span>
-                <span style={{ display: 'inline-block', width: '30%' }}>출결</span>
+                <div className="nameModalTitle" style={{display:'flex'}
+                }>
+                    <span style={{ display: 'inline-block', width: '30%' }}>이름</span>
+                    <span style={{ display: 'inline-block', width: '30%' }}>이메일</span>
+                    <span style={{ display: 'inline-block', width: '30%' }}>출결</span>
+                </div>
                 <hr />
                 {renderAttend}
                 <br />
+                <div>
                 <span>출석 인원 : {counter} / {totalCounter}</span>
+                </div>
             </Modal>
             
             <Modal

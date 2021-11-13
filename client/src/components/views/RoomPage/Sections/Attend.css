@@ -1,0 +1,34 @@
+.deleteMemBtn{
+    font-size: 12px;
+    background-color: white;
+    cursor: pointer;
+}
+
+
+.nameModalTitle{
+    font-weight: bold;
+}
+
+.ant-space-align-center{
+    align-items: baseline;
+}
+
+.ant-space-align-center::placeholder{
+    font-size: 12px;
+}
+
+input::placeholder{
+    font-size: 12px;
+}
+
+.ant-space-horizontal{
+    margin-right: 12px;
+}
+
+.ant-space.ant-space-horizontal.ant-space-align-center{
+    font-size: 12px;
+}
+
+.anticon[tabindex]{
+    margin-right: 12px;
+}
