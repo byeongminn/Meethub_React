@@ -44,9 +44,9 @@ function RoomPage(props) {
             },
         ],
     };
+    const canvasRef=useRef(null);
 
     const [socket, setSocket] = useState({});
-    //let localStream=document.createElement("video");
     useEffect(() => {
         axios.post('/api/rooms/getRoom', variables)
             .then(response => {
@@ -59,11 +59,13 @@ function RoomPage(props) {
                     }, 3000)
                 }
             })
-
+        const canvas1=canvasRef.current;
         const newSocket = io.connect("http://localhost:5000");
         setSocket(newSocket);
         let localStream=document.createElement("video");
-
+        faceApi.loadMtcnnModel('/models')
+        faceApi.loadFaceRecognitionModel('/models')
+        
         //방에 입장했을 경우. 같은 방에 있는 유저들의 정보를 가져온다.
         newSocket.on("all_users", (allUsers) => {
             let len = allUsers.length;
@@ -170,43 +172,43 @@ function RoomPage(props) {
             })
             .then((stream) => {
                 if (localVideoRef.current) localVideoRef.current.srcObject = stream;
-                
+                let localVideo = document.createElement("video")
                 //localStream = stream;
-                localStream.srcObject = stream;
-                //localStream.autoplay=true;
-                console.log(localStream.srcObject);
-                faceApi.loadMtcnnModel('./models')
-                faceApi.loadFaceRecognitionModel('./models')    
-
-                localStream.addEventListener('playing', () => {
-                    console.log("do face");
+                localVideo.srcObject = stream;
+                localVideo.autoplay=true;
+                console.log(localVideo.srcObject);
+                if(localVideo.autoplay== true){
+                localVideo.addEventListener('playing', () => {
+                    console.log("do face1");
                     let image = new Image()
-                    image.src = "img/sunglasses.png"
-                    console.log(localStream.srcObject);
-                    const canvas=faceApi.createCanvasFromMedia(localStream)
+                    image.src = "/img/sunglasses.png"
+                    console.log(localVideo.srcObject);
+                    //const canvas=faceApi.createCanvasFromMedia(localVideo)
                     //const ctx = canvas.getContext('2d');
-                    document.body.append(canvas)
+                    //document.body.append(canvas)
                     function step() {
-                        //getFace(localStream, mtcnnForwardParams)
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(localStream, 0, 0)
+                        getFace(localVideo, mtcnnForwardParams)
+                        const ctx = canvas1.getContext('2d');
+                        ctx.drawImage(localVideo, 0, 0)
                         results.map(result => {
                             ctx.drawImage(
                                 image,
-                                result.faceDetection.box.x + 15,
-                                result.faceDetection.box.y + 30,
-                                result.faceDetection.box.width,
-                                result.faceDetection.box.width * (image.height / image.width)
+                                result.detection.box.x + 15,
+                                result.detection.box.y + 30,
+                                result.detection.box.width,
+                                result.detection.box.width * (image.height / image.width)
                             )
                         })
                         requestAnimationFrame(step)
+                        
                     }
                     
                     requestAnimationFrame(step)
                 })
-
+                localStream=canvas1.captureStream(30)
+                }
+                // localStream=canvas1.captureStream(30)
                 
-                //localStream = canvas.captureStream(30)
 
                 //내 비디오정보를 가져오고 join_room을 하면 그때부터 소켓연결이 시작 됨.
                 newSocket.emit("join_room", {
@@ -226,8 +228,8 @@ function RoomPage(props) {
         }
     }, [])
 
-    async function getFace(localStream,options){
-        results=await faceApi.mtcnn(localStream,options)
+    async function getFace(localVideo,options){
+        results=await faceApi.mtcnn(localVideo,options)
         console.log("face_DE");
     }
 
@@ -319,6 +321,7 @@ function RoomPage(props) {
                     requestAnimationFrame(step)
             }
         })
+        //localVideoRef.current.srcObject = canvas.captureStream(30)
         }
         
             
@@ -372,8 +375,8 @@ function RoomPage(props) {
         <div>
             <ShareDisplay />
             <div>
-                <button onClick={handleFace}>Face</button>
-            {/* <canvas id="canvas" width="240" height="240" {...props}>Your browser does not support Canvas</canvas> */}
+                {/* <button onClick={handleFace}>Face</button> */}
+            <canvas ref={canvasRef} width="240" height="240" {...props}>Your browser does not support Canvas</canvas>
                 <video
                     style={{
                         width: 240,
