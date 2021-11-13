@@ -5,6 +5,8 @@ import moment from 'moment';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import Question from './Question';
 
+import conversation from "../img/conversation.png";
+
 const { TextArea } = Input;
 const { confirm } = Modal;
 
@@ -115,7 +117,7 @@ function QuestionList(props) {
 
     return (
         <div>
-            <button onClick={() => setOpenQuestionListModal(true)}>질문</button>
+            <button onClick={() => setOpenQuestionListModal(true)}><img src={conversation}/></button>
             <Modal
                 title='질문 목록'
                 visible={openQuestionListModal}

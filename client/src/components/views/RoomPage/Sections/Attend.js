@@ -4,6 +4,8 @@ import axios from 'axios';
 import { CheckOutlined, ExclamationCircleOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import './Attend.css'
 
+import user from "../img/user.png";
+
 const { confirm } = Modal;
 
 function Attend(props) {
@@ -160,7 +162,7 @@ function Attend(props) {
     return (
         <div>
             {props.user._id === props.room.creator._id &&
-                <button onClick={handleOpenAttendModal}>출석부</button>
+                <button onClick={handleOpenAttendModal}><img src={user}/></button>
             }
             <Modal
                 style={{ textAlign: 'center' }}

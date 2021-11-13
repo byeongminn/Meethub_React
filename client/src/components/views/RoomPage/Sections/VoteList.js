@@ -5,6 +5,8 @@ import axios from 'axios';
 import moment from 'moment';
 import Vote from './Vote';
 
+import voteingBox from "../img/voting-box.png";
+
 const { confirm } = Modal;
 
 function VoteList(props) {
@@ -144,7 +146,7 @@ function VoteList(props) {
 
     return (
         <div>
-            <button onClick={() => setOpenVoteListModal(true)}>투표</button>
+            <button onClick={() => setOpenVoteListModal(true)}><img src={ voteingBox} /></button>
             <Modal
                 title='투표'
                 visible={openVoteListModal}

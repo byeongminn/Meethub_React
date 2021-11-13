@@ -12,6 +12,19 @@ import effectSound from './Sections/effectSound';
 import ES from './audios/ES.mp3';
 import Video from './Sections/Video';
 import * as faceApi from "face-api.js";
+import './RoomPage.css'
+
+
+// imgs
+import call from './img/call.png'
+import conversation from './img/conversation.png'
+import menu from './img/menu.png'
+import settings from './img/settings.png'
+import user from './img/user.png'
+import videoCamera from './img/video-camera.png'
+import votingBox from './img/voting-box.png'
+import mic from './img/mic.png'
+
 
 const { TabPane } = Tabs;
 
@@ -379,79 +392,175 @@ function RoomPage(props) {
   };
     console.log("user = ",user)
 
+    // css 관련 버튼 이벤트
+    function displayOnBtn(){
+        if(document.getElementById("rightContents").style.display === "none"
+            || document.getElementById("rightContents").style.display === ""){
+            document.getElementById("rightContents").style.display = "flex"
+        }
+        else{
+            document.getElementById("rightContents").style.display = "none"
+        }
+    }
+
   return (
-    <div>
-      <ShareDisplay
-        localVideoRef={localVideoRef}
-        onShare={onShare}
-        onChangeLocalStream={onChangeLocalStream}
-        pcs={pcsState}
-      />
       <div>
-      <canvas ref={canvasRef} width="240" height="240" {...props}>Your browser does not support Canvas</canvas>
-        <video
-          style={{
-            width: 240,
-            height: 240,
-            margin: 5,
-            backgroundColor: "black",
-          }}
-          muted
-          ref={localVideoRef}
-          autoPlay
-        ></video>
-        <button className="cameraOnBtn" onClick={handleCamera}>
-          {myCameraOn ? "카메라 끄기" : "카메라 켜기"}
-        </button>
-        <button className="soundOnBtn" onClick={handleCamera}>
-            <span>음소거</span>
-        </button>
+          <div className="roomHead">
+              <span>MeetHub</span>
+          </div>
+        <div className="roomBody">
+          <div className="roomVideos">
+              <div>
+                  <div>
+                        <canvas ref={canvasRef} width="240" height="240" {...props}>Your browser does not support Canvas</canvas>
+                        <video
+                          style={{
+                            width: 240,
+                            height: 240,
+                            margin: 5,
+                            backgroundColor: "#cfc6c64d",
+                          }}
+                          muted
+                          ref={localVideoRef}
+                          autoPlay
+                        ></video>
+                  </div>
+                  <div>
+                      <canvas ref={canvasRef} width="240" height="240" {...props}>Your browser does not support Canvas</canvas>
+                      <video
+                          style={{
+                              width: 240,
+                              height: 240,
+                              margin: 5,
+                              backgroundColor: "#cfc6c64d",
+                          }}
+                          muted
+                          ref={localVideoRef}
+                          autoPlay
+                      ></video>
+                  </div>
+              </div>
+              <div>
+                  <div>
+                      <canvas ref={canvasRef} width="240" height="240" {...props}>Your browser does not support Canvas</canvas>
+                      <video
+                          style={{
+                              width: 240,
+                              height: 240,
+                              margin: 5,
+                              backgroundColor: "#cfc6c64d",
+                          }}
+                          muted
+                          ref={localVideoRef}
+                          autoPlay
+                      ></video>
+                  </div>
+                  <div>
+                      <canvas ref={canvasRef} width="240" height="240" {...props}>Your browser does not support Canvas</canvas>
+                      <video
+                          style={{
+                              width: 240,
+                              height: 240,
+                              margin: 5,
+                              backgroundColor: "#cfc6c64d",
+                          }}
+                          muted
+                          ref={localVideoRef}
+                          autoPlay
+                      ></video>
+                  </div>
+              </div>
 
-        <button>출석부</button>
 
-        {users.map((user, index) => {
-          return (
-            <div key={index}>
-              <Video key={index} email={user.email} stream={user.stream} />
-              <button onClick={() => cameraTurn(user.id)}>화상연결해제</button>
-              <button onClick={() => cameraTurnRetry(user.id)}>
-                화상다시연결
+            {users.map((user, index) => {
+              return (
+                <div key={index}>
+                  <Video key={index} email={user.email} stream={user.stream} />
+                  <button onClick={() => cameraTurn(user.id)}>화상연결해제</button>
+                  <button onClick={() => cameraTurnRetry(user.id)}>
+                    화상다시연결
 
-              </button>
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+          {room.roomName && user.name && (
+            <div className="roomChat">
+              <Tabs defaultActiveKey="1">
+                <TabPane tab="사용자" key="2">
+                  <ParticipantList socket={socket} roomName={room.roomName} />
+                </TabPane>
+                <TabPane tab="채팅" key="1">
+                  <ChatList socket={socket} user={user} roomName={room.roomName} />
+                </TabPane>
+              </Tabs>
             </div>
-          );
-        })}
-      </div>
-      {room.roomName && user.name && (
-        <div>
-          <Tabs defaultActiveKey="1">
-            <TabPane tab="사용자" key="2">
-              <ParticipantList socket={socket} roomName={room.roomName} />
-            </TabPane>
-            <TabPane tab="채팅" key="1">
-              <ChatList socket={socket} user={user} roomName={room.roomName} />
-            </TabPane>
-          </Tabs>
-          <Attend
-            socket={socket}
-            roomName={room.roomName}
-            room={room}
-            user={props.user}
-          />
-          <VoteList room={room} user={props.user} />
-          <QuestionList room={room} user={props.user} />
+          )}
+
+
         </div>
-      )}
-      <button
-        onClick={() => {
-          socket.disconnect();
-          props.history.push("/");
-          es.play();
-        }}
-      >
-        나가기
-      </button>
-    </div>
+          <div className="roomFooter">
+
+              <div className="leftFooter">
+
+                      <button className="soundOnBtn" onClick={handleCamera}>
+                          <span><img src={ mic} /></span>
+                      </button>
+                      <button
+                          onClick={() => {
+                              socket.disconnect();
+                              props.history.push("/");
+                              es.play();
+                          }}
+                      >
+                          <img src={ call} />
+                      </button>
+                      <button className="cameraOnBtn" onClick={handleCamera}>
+                          <img src={ videoCamera} />
+                      </button>
+
+
+              </div>
+
+              <div className="rightFooter">
+                  <div className="rightBtn">
+                      <button onClick={displayOnBtn} id="rightBtn"><img src={ menu} />
+
+
+                          <div id="rightContents" className="rightContents">
+                              {room.roomName && user.name && (
+                                  <div className="rightBtnDiv">
+                                      <div>
+                                          <VoteList room={room} user={props.user} />
+                                          <Attend
+                                              socket={socket}
+                                              roomName={room.roomName}
+                                              room={room}
+                                              user={props.user}
+                                          />
+                                      </div>
+                                      <div>
+                                          <QuestionList room={room} user={props.user} />
+                                          <ShareDisplay
+                                              localVideoRef={localVideoRef}
+                                              onShare={onShare}
+                                              onChangeLocalStream={onChangeLocalStream}
+                                              pcs={pcsState}
+                                          />
+                                      </div>
+                                  </div>
+                              )}
+
+                          </div>
+
+                      </button>
+
+                  </div>
+              </div>
+          </div>
+
+      </div>
   );
 }
 

@@ -1,0 +1,26 @@
+.displayShare{
+    display: none;
+    position: absolute;
+    font-size: 14px;
+    border: 3px solid #ffff;
+    top: -43px;
+    left: 58px;
+    width: 136px;
+    flex-direction: column;
+    background-color: white;
+    font-weight: bold;
+}
+
+div > .displayShare > button{
+    background-color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+div > .displayShare > button:hover{
+    background-color: blanchedalmond;
+}
+
+div > .displayShare > button:nth-child(1){
+    border-bottom: 1px solid #000000;
+}

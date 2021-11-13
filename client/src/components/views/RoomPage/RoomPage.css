@@ -1,0 +1,183 @@
+.roomBody{
+    display: flex;
+    width: 100%;
+}
+
+.roomVideos{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background-color: #000000;
+}
+
+.ant-tabs{
+    width: 100%;
+    height: 100%;
+    border-left: 1px solid #faebd7;
+}
+.ant-tabs-content-holder{
+    width: 100%;
+    height: 100%;
+}
+
+.ant-tabs-tabpane{
+    width: 100%
+}
+
+.ant-tabs-content{
+    height: 100%;
+}
+
+.ant-tabs-tabpane > div > form > input{
+    width: 100%;
+    background-color: antiquewhite;
+}
+
+.ChatList__container{
+    width: 100%;
+    height: 96%;
+    color: white;
+}
+
+.roomChat {
+    height: 100%;
+    width: 17%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background-color: #292929;
+}
+
+#root{
+    background-color: #292929;
+    height: 100%;
+}
+
+#root > div{
+    height: 100%;
+}
+
+#root > div > div{
+    height: 100%;
+}
+
+.roomHead{
+    border-bottom: 1px solid #faebd7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #292929;
+    height: 7%;
+}
+
+.roomHead > span{
+    color: antiquewhite;
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.roomBody{
+    height: 79%;
+}
+
+.roomFooter{
+    display: flex;
+    height: 14%;
+    /*border: 1px solid #ffffff;*/
+    background-color: #292929;
+    border-top: 1px solid #faebd7;
+}
+
+.roomVideos > div > div > canvas{
+    position: absolute;
+}
+
+.roomVideos > div{
+    display: flex;
+}
+
+.ant-tabs-nav-wrap{
+    justify-content: center;
+    color: antiquewhite;
+}
+
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn{
+    font-weight: bold;
+    color: #f1f1f1;
+}
+
+.ant-tabs-ink-bar{
+    background: #ffffff;
+}
+
+.ant-tabs-tabpane > div:nth-child(2) > form{
+    display: flex;
+    justify-content: center;
+}
+
+.leftFooter{
+    display: flex;
+    width: 84%;
+    align-items: center;
+    justify-content: center;
+    gap:18px;
+}
+
+.leftFooter img,
+.rightFooter img{
+    cursor: pointer;
+    width: 54px;
+}
+
+.leftFooter button,
+.rightFooter button{
+    background-color: #292929;
+    border: 0;
+}
+
+.rightFooter{
+    display: flex;
+    position: relative;
+    width: 17%;
+    align-items: center;
+    justify-content: center;
+}
+
+.rightContents{
+    border: 0px solid;
+    top: -80px;
+    left: -45px;
+    position: absolute;
+    display: none;
+}
+
+.rightBtnDiv{
+    display: flex;
+    flex-direction: column;
+    border: 5px solid #000000;
+    position: absolute;
+    top: -36px;
+    left: -70px;
+}
+
+.rightBtnDiv > div *{
+    background-color: white;
+}
+
+.rightBtnDiv > div{
+    display: flex;
+}
+
+.rightFooter img{
+    width: 40px;
+}
+
+.rightBtnDiv > div >div{
+    padding: 6px;
+}
+
+#rightBtn{
+    position: relative;
+}

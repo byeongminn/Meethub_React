@@ -1,10 +1,18 @@
 import React, { useState, useRef } from "react";
+import './ShareDisplay.css'
+import videoCamera from './../img/squares.png'
+import mic from "../img/mic.png";
+import {Modal} from "antd";
+import {ExclamationCircleOutlined} from "@ant-design/icons";
+
+const { confirm } = Modal;
 
 function ShareDisplay({ localVideoRef, onShare, onChangeLocalStream, pcs }) {
   const [display, setDisplay] = useState(false);
   const videoRef = useRef();
 
   const onClick = () => {
+    console.log("!23");
     navigator.mediaDevices
       .getUserMedia({
         audio: true,
@@ -46,6 +54,7 @@ function ShareDisplay({ localVideoRef, onShare, onChangeLocalStream, pcs }) {
 
   const onShareCam = () => {
     //내 비디오에 대한 정보를 가져온다.
+    console.log("123")
     navigator.mediaDevices
       .getUserMedia({
         audio: true,
@@ -72,13 +81,36 @@ function ShareDisplay({ localVideoRef, onShare, onChangeLocalStream, pcs }) {
         console.log(`getUserMedia error: ${error}`);
       });
   };
+
+  const showConfirm = () => {
+    confirm({
+      title: '공유하고 싶은 옵션을 고르세요.',
+      icon: <ExclamationCircleOutlined />,
+      // content: '삭제시 해당 질문이 질문 목록에서 삭제됩니다.',
+      okText: '화면 공유',
+      okType: 'danger',
+      cancelText: '캠화면 공유',
+      onOk() {
+        onClick();
+      },
+      onCancel(){
+        onShareCam();
+      }
+    })
+  }
+
   return (
-    <div>
-      <button onClick={onClick}>화면 공유</button>
-      <button onClick={onShareCam}>캠화면 공유</button>
-      {display && (
-        <video ref={videoRef} autoPlay playsInline width="400" height="400" />
-      )}
+    <div style={{position:"relative"}}>
+      <div className="displayShareBtn">
+        <button onClick={showConfirm}><img src={ videoCamera} /></button>
+      </div>
+      <div id="displayShare" className="displayShare">
+        <button onClick={onClick}>화면 공유</button>
+        <button onClick={onShareCam}>캠화면 공유</button>
+        {display && (
+          <video ref={videoRef} autoPlay playsInline width="400" height="400" />
+        )}
+      </div>
     </div>
   );
 }
