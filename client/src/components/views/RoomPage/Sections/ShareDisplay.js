@@ -24,7 +24,6 @@ function ShareDisplay({ localVideoRef, onShare, onChangeLocalStream, pcs }) {
             localVideoRef.current.srcObject = screenStream;
 
             let videoTrack = screenStream.getVideoTracks()[0];
-            console.log(videoTrack);
             Object.keys(pcs).forEach((key) => {
               var sender = pcs[key].getSenders().find(function (s) {
                 return s.track.kind === videoTrack.kind;
@@ -44,9 +43,39 @@ function ShareDisplay({ localVideoRef, onShare, onChangeLocalStream, pcs }) {
       });
   };
   // https://developer.mozilla.org/en-US/docs/Web/API/Screen_Capture_API/Using_Screen_Capture
+
+  const onShareCam = () => {
+    //내 비디오에 대한 정보를 가져온다.
+    navigator.mediaDevices
+      .getUserMedia({
+        audio: true,
+        video: {
+          width: 240,
+          height: 240,
+        },
+      })
+      .then((stream) => {
+        localVideoRef.current.srcObject = stream;
+
+        let videoTrack = stream.getVideoTracks()[0];
+        Object.keys(pcs).forEach((key) => {
+          var sender = pcs[key].getSenders().find(function (s) {
+            return s.track.kind === videoTrack.kind;
+          });
+          console.log("found sender:", sender);
+          sender.replaceTrack(videoTrack);
+          onChangeLocalStream(stream);
+        });
+        onShare();
+      })
+      .catch((error) => {
+        console.log(`getUserMedia error: ${error}`);
+      });
+  };
   return (
     <div>
       <button onClick={onClick}>화면 공유</button>
+      <button onClick={onShareCam}>캠화면 공유</button>
       {display && (
         <video ref={videoRef} autoPlay playsInline width="400" height="400" />
       )}
