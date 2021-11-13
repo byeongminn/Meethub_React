@@ -377,6 +377,7 @@ function RoomPage(props) {
     //     console.log(`getUserMedia error: ${error}`);
     //   });
   };
+    console.log("user = ",user)
 
   return (
     <div>
@@ -399,9 +400,15 @@ function RoomPage(props) {
           ref={localVideoRef}
           autoPlay
         ></video>
-        <button onClick={handleCamera}>
+        <button className="cameraOnBtn" onClick={handleCamera}>
           {myCameraOn ? "카메라 끄기" : "카메라 켜기"}
         </button>
+        <button className="soundOnBtn" onClick={handleCamera}>
+            <span>음소거</span>
+        </button>
+
+        <button>출석부</button>
+
         {users.map((user, index) => {
           return (
             <div key={index}>
@@ -409,6 +416,7 @@ function RoomPage(props) {
               <button onClick={() => cameraTurn(user.id)}>화상연결해제</button>
               <button onClick={() => cameraTurnRetry(user.id)}>
                 화상다시연결
+
               </button>
             </div>
           );
