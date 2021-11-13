@@ -2,63 +2,78 @@ import { message, Tabs } from "antd";
 import axios from "axios";
 import React, { useState, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
-import Attend from "./Sections/Attend";
-import ChatList from "./Sections/ChatList";
-import ParticipantList from "./Sections/ParticipantList";
-import QuestionList from "./Sections/QuestionList";
-import ShareDisplay from "./Sections/ShareDisplay";
-import VoteList from "./Sections/VoteList";
-import effectSound from "./Sections/effectSound";
-import ES from "./audios/ES.mp3";
-import Video from "./Sections/Video";
+import Attend from './Sections/Attend';
+import ChatList from './Sections/ChatList';
+import ParticipantList from './Sections/ParticipantList';
+import QuestionList from './Sections/QuestionList';
+import ShareDisplay from './Sections/ShareDisplay';
+import VoteList from './Sections/VoteList';
+import effectSound from './Sections/effectSound';
+import ES from './audios/ES.mp3';
+import Video from './Sections/Video';
+import * as faceApi from "face-api.js";
 
 const { TabPane } = Tabs;
 
 function RoomPage(props) {
-  const user = props.user;
-  const roomId = props.match.params.roomId;
-  const [room, setRoom] = useState({});
-  const [isShare, SetisShare] = useState(false);
+    const user = props.user;
+    const roomId = props.match.params.roomId;
+    const [room, setRoom] = useState({});
+    const [isShare, SetisShare] = useState(false);
 
-  const variables = {
-    roomId,
-  };
-  const es = effectSound(ES, 1);
+    const variables = {
+        roomId
+    }
 
-  const [users, setUsers] = useState([]);
+    const mtcnnForwardParams={
+        minFaceSize: 200
+    }
+    var results=[];
 
-  let localVideoRef = useRef(null);
-  let myCameraOn = useRef(true);
+    const es = effectSound(ES, 1);
 
-  let pcs;
-  const [pcsState, setPcsState] = useState({});
-  const currLocalStream = useRef(null);
+    const [users, setUsers] = useState([]);
 
-  const pc_config = {
-    iceServers: [
-      {
-        urls: "stun:stun.l.google.com:19302",
-      },
-    ],
-  };
+    let localVideoRef = useRef(null);
+    let myCameraOn = useRef(true);
 
-  const [socket, setSocket] = useState({});
+    let pcs;
+    const [pcsState, setPcsState] = useState({});
+    const currLocalStream = useRef(null);
+    const pc_config = {
+        iceServers: [
+            {
+                urls: "stun:stun.l.google.com:19302",
+            },
+        ],
+    };
+    const canvasRef=useRef(null);
 
-  useEffect(() => {
-    axios.post("/api/rooms/getRoom", variables).then((response) => {
-      if (response.data.success) {
-        setRoom(response.data.room);
-      } else {
-        message.error("방에 대한 정보를 받아오는데 실패했습니다.");
-        setTimeout(() => {
-          props.history.push("/");
-        }, 3000);
-      }
-    });
+    const [socket, setSocket] = useState({});
+    useEffect(() => {
+        axios.post('/api/rooms/getRoom', variables)
+            .then(response => {
+                if (response.data.success) {
+                    setRoom(response.data.room);
+                } else {
+                    message.error('방에 대한 정보를 받아오는데 실패했습니다.');
+                    setTimeout(() => {
+                        props.history.push('/');
+                    }, 3000)
+                }
+            })
+        const canvas1=canvasRef.current;
+        const newSocket = io.connect("http://localhost:5000");
+        setSocket(newSocket);
+        let localStream=document.createElement("video");
+        faceApi.loadMtcnnModel('/models')
+        faceApi.loadFaceRecognitionModel('/models')
+        
+        //방에 입장했을 경우. 같은 방에 있는 유저들의 정보를 가져온다.
+       
 
-    const newSocket = io.connect("http://localhost:5000");
-    setSocket(newSocket);
-    let localStream;
+    
+    
 
     //방에 입장했을 경우. 같은 방에 있는 유저들의 정보를 가져온다.
     newSocket.on("all_users", (allUsers) => {
@@ -182,9 +197,39 @@ function RoomPage(props) {
       })
       .then((stream) => {
         if (localVideoRef.current) localVideoRef.current.srcObject = stream;
-
+        let localVideo = document.createElement("video")
+        //localStream = stream;
+        localVideo.srcObject = stream;
+        localVideo.autoplay=true;
         localStream = stream;
-
+        if(localVideo.autoplay== true){
+            localVideo.addEventListener('playing', () => {
+                let image = new Image()
+                image.src = "/img/sunglasses.png"
+                //const canvas=faceApi.createCanvasFromMedia(localVideo)
+                //const ctx = canvas.getContext('2d');
+                //document.body.append(canvas)
+                function step() {
+                    getFace(localVideo, mtcnnForwardParams)
+                    const ctx = canvas1.getContext('2d');
+                    ctx.drawImage(localVideo, 0, 0)
+                    results.map(result => {
+                        ctx.drawImage(
+                            image,
+                            result.detection.box.x + 15,
+                            result.detection.box.y + 30,
+                            result.detection.box.width,
+                            result.detection.box.width * (image.height / image.width)
+                        )
+                    })
+                    requestAnimationFrame(step)
+                    
+                }
+                
+                requestAnimationFrame(step)
+            })
+            localStream=canvas1.captureStream(30)
+            }
         //내 비디오정보를 가져오고 join_room을 하면 그때부터 소켓연결이 시작 됨.
         newSocket.emit("join_room", {
           roomName: props.location.room.roomName,
@@ -204,6 +249,7 @@ function RoomPage(props) {
       props.history.push("/");
     }
   }, []);
+  
 
   const createPeerConnection = (socketID, email, newSocket, localStream) => {
     let pc = new RTCPeerConnection(pc_config);
@@ -235,6 +281,7 @@ function RoomPage(props) {
         },
       ]);
     };
+        //내 비디오에 대한 정보를 가져온다.
 
     if (localStream) {
       localStream.getTracks().forEach((track) => {
@@ -245,18 +292,25 @@ function RoomPage(props) {
     }
     // return pc
     return pc;
-  };
+    };
 
-  function handleCamera() {
+    function handleCamera() {
     if (myCameraOn) localVideoRef.current.srcObject.getVideoTracks()[0].stop();
     else console.log("카메라켜기");
     myCameraOn.current = !myCameraOn.current;
-  }
+     }
 
-  const onShare = () => SetisShare(true);
-  const onChangeLocalStream = (stream) => (currLocalStream.current = stream);
+    const onShare = () => SetisShare(true);
+    const onChangeLocalStream = (stream) => (currLocalStream.current = stream);
+    async function getFace(localVideo,options){
+        results=await faceApi.mtcnn(localVideo,options)
+        console.log("face_DE");
+    }
 
-  const cameraTurn = (userSocketId) => {
+    // const createPeerConnection = (socketID, email, newSocket, localStream) => {
+    //     let pc = new RTCPeerConnection(pc_config);
+
+    const cameraTurn = (userSocketId) => {
     navigator.mediaDevices
       .getUserMedia({
         audio: true,
@@ -333,6 +387,7 @@ function RoomPage(props) {
         pcs={pcsState}
       />
       <div>
+      <canvas ref={canvasRef} width="240" height="240" {...props}>Your browser does not support Canvas</canvas>
         <video
           style={{
             width: 240,
