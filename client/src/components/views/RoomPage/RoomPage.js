@@ -256,6 +256,74 @@ function RoomPage(props) {
   const onShare = () => SetisShare(true);
   const onChangeLocalStream = (stream) => (currLocalStream.current = stream);
 
+  const cameraTurn = (userSocketId) => {
+    navigator.mediaDevices
+      .getUserMedia({
+        audio: true,
+        video: {
+          width: 240,
+          height: 240,
+        },
+      })
+      .then((stream) => {
+        let videoTrack = stream.getVideoTracks()[0];
+        Object.keys(pcsState).forEach((key) => {
+          if (key !== userSocketId) return;
+          var sender = pcsState[key].getSenders().find(function (s) {
+            return s.track.kind === videoTrack.kind;
+          });
+          console.log("found sender:", sender);
+
+          navigator.mediaDevices
+            .getUserMedia({
+              audio: true,
+              video: false,
+            })
+            .then((stream) => {
+              let videoTrack = stream.getVideoTracks()[0];
+              sender.replaceTrack(videoTrack);
+            })
+            .catch((error) => {
+              console.log(`getUserMedia error: ${error}`);
+            });
+        });
+      })
+      .catch((error) => {
+        console.log(`getUserMedia error: ${error}`);
+      });
+  };
+
+  const cameraTurnRetry = (userSocketId) => {
+    // navigator.mediaDevices
+    //   .getUserMedia({
+    //     audio: true,
+    //     video: {
+    //       width: 240,
+    //       height: 240,
+    //     },
+    //   })
+    //   .then((stream) => {
+    //     let videoTrack = stream.getAudioTracks()[0];
+    //     Object.keys(pcsState).forEach((key) => {
+    //       if (key !== userSocketId) return;
+    //       var sender = pcsState[key].getSenders().find(function (s) {
+    //         return s.track.kind === "audio";
+    //       });
+    //       if (stream) {
+    //         stream.getTracks().forEach((track) => {
+    //           pcsState[key].removeTrack(sender);
+    //           pcsState[key].addTrack(track, stream);
+    //         });
+    //       } else {
+    //         console.log("no local stream");
+    //       }
+    //     });
+    //   })
+    //   .catch((error) => {
+    //     console.log(`getUserMedia error: ${error}`);
+    //   });
+  };
+
   return (
     <div>
       <ShareDisplay
@@ -283,7 +351,10 @@ function RoomPage(props) {
           return (
             <div key={index}>
               <Video key={index} email={user.email} stream={user.stream} />
-              {/* <button onClick={() => cameraTurn(user.id)}>화상연결해제</button> */}
+              <button onClick={() => cameraTurn(user.id)}>화상연결해제</button>
+              <button onClick={() => cameraTurnRetry(user.id)}>
+                화상다시연결
+              </button>
             </div>
           );
         })}
