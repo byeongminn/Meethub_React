@@ -10,6 +10,7 @@ import ShareDisplay from './Sections/ShareDisplay';
 import VoteList from './Sections/VoteList';
 import effectSound from './Sections/effectSound';
 import ES from './audios/ES.mp3';
+import ES2 from './audios/ES2.mp3';
 import Video from './Sections/Video';
 import * as faceApi from "face-api.js";
 import './RoomPage.css'
@@ -44,7 +45,7 @@ function RoomPage(props) {
     var results=[];
 
     const es = effectSound(ES, 1);
-
+    const es2 = effectSound(ES2, 1);
     const [users, setUsers] = useState([]);
 
     let localVideoRef = useRef(null);
@@ -199,6 +200,13 @@ function RoomPage(props) {
       //Users도 새롭게 갱신해준다.
     });
 
+    newSocket.on("warning_message",(data)=>{
+      console.log(data);
+      message.info(`카메라,마이크켜세요`);
+      es2.play();
+    })
+    
+    
     //내 비디오에 대한 정보를 가져온다.
     navigator.mediaDevices
       .getUserMedia({
@@ -311,7 +319,13 @@ function RoomPage(props) {
     if (myCameraOn) localVideoRef.current.srcObject.getVideoTracks()[0].stop();
     else console.log("카메라켜기");
     myCameraOn.current = !myCameraOn.current;
-     }
+    }
+    
+    function warning(){
+      
+    }
+
+
 
     const onShare = () => SetisShare(true);
     const onChangeLocalStream = (stream) => (currLocalStream.current = stream);
@@ -516,7 +530,10 @@ function RoomPage(props) {
                       >
                           <img src={ call} />
                       </button>
-                      <button className="cameraOnBtn" onClick={handleCamera}>
+                      {/* <button className="cameraOnBtn" onClick={handleCamera}>
+                          <img src={ videoCamera} />
+                      </button> 임시로 경고버튼으로사용*/}
+                      <button className="cameraOnBtn" onClick={()=>{socket.emit("warning",room.roomName)}}>
                           <img src={ videoCamera} />
                       </button>
 
