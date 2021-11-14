@@ -20,6 +20,7 @@
 .ant-tabs-content-holder{
     width: 100%;
     height: 100%;
+
 }
 
 .ant-tabs-tabpane{
@@ -33,12 +34,15 @@
 .ant-tabs-tabpane > div > form > input{
     width: 100%;
     background-color: antiquewhite;
+    background-color: #292929;
+    border: 2px solid #faebd7;
 }
 
 .ChatList__container{
     width: 100%;
-    height: 96%;
+    height: 93%;
     color: white;
+    margin-bottom: 12px;
 }
 
 .roomChat {
@@ -180,4 +184,38 @@
 
 #rightBtn{
     position: relative;
+}
+
+/*모달*/
+
+.ant-modal-body > div{
+    display: flex;
+    margin: 0px 0px 30px;
+    gap:8px;
+    flex-direction: column;
+
+}
+
+.ant-modal-body > div > div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:8px;
+    flex-direction: column;
+}
+
+.ant-modal-body > div > div:nth-child(4){
+    justify-content: flex-end;
+}
+
+.ant-modal-body > div > div:nth-child(5){
+    justify-content: flex-end;
+}
+
+.ant-modal-confirm .ant-modal-confirm-btns .ant-btn + .ant-btn{
+    margin-left: 0;
+}
+
+.ant-modal-confirm-body > .anticon + .ant-modal-confirm-title + .ant-modal-confirm-content {
+    margin-left: 0;
 }

@@ -88,7 +88,7 @@ function Question(props) {
             })
         }
 
-        return <div key={i}>
+        return <div key={i} style={{flexDirection:'column'}}>
             <div>{v.title}</div>
             <div>{v.content}</div>
             <div>{v.answerer.name}</div>
@@ -109,7 +109,7 @@ function Question(props) {
                 ]}
                 onCancel={props.onCancel}
             >
-                <div>
+                <div style={{flexDirection:'column'}}>
                     <div>{props.question.title}</div>
                     <div>{props.question.content}</div>
                     <div>{props.question.questioner.name}</div>

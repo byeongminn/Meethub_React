@@ -128,11 +128,11 @@ function Attend(props) {
             })
         }
 
-        return <div key={i}>
+        return <div key={i} style={{flexDirection:'row'}}>
             <span style={{ display: 'inline-block', width: '30%' }}>{v.name}</span>
             <span style={{ display: 'inline-block', width: '30%' }}>{v.email}</span>
             <span style={{ display: 'inline-block', width: '30%' }}>{v.attend ? <CheckOutlined style={{ color: 'green' }} /> : ''}</span>
-            <button className="deleteMemBtn" style={{  display: 'inline-block', border:'0' }} onClick={showConfirm}>삭제</button>
+            <button className="deleteMemBtn" style={{  display: 'inline-block', border:'0',width:'40px' }} onClick={showConfirm}>삭제</button>
         </div>
     })
 
@@ -161,9 +161,9 @@ function Attend(props) {
 
     return (
         <div>
-            {props.user._id === props.room.creator._id &&
+            {/*{props.user._id === props.room.creator._id &&*/}
                 <button onClick={handleOpenAttendModal}><img src={user}/></button>
-            }
+            {/*}*/}
             <Modal
                 style={{ textAlign: 'center' }}
                 title="출결 확인"
@@ -175,7 +175,7 @@ function Attend(props) {
                     <Button key="confirm" type="primary" onClick={onConfirm}>출결 확인</Button>
                 ]}
             >
-                <div className="nameModalTitle" style={{display:'flex'}
+                <div className="nameModalTitle" style={{display:'flex', flexDirection: 'row'}
                 }>
                     <span style={{ display: 'inline-block', width: '30%' }}>이름</span>
                     <span style={{ display: 'inline-block', width: '30%' }}>이메일</span>
@@ -184,7 +184,7 @@ function Attend(props) {
                 <hr />
                 {renderAttend}
                 <br />
-                <div>
+                <div style={{display:'flex',justifyContent: 'center'}}>
                 <span>출석 인원 : {counter} / {totalCounter}</span>
                 </div>
             </Modal>

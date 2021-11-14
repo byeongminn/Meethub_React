@@ -102,7 +102,7 @@ function LandingPage(props) {
                         ))
                         :
                         <div style={{ width: '100%', height: '20vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <span style={{ fontSize: '3rem', fontWeight: '600' }}>방이 하나도 존재하지 않습니다.</span>
+                            <span style={{ color:'#faebd7', fontSize: '3rem', fontWeight: '600' }}>방이 하나도 존재하지 않습니다.</span>
                         </div>
                     }
                 </Row>

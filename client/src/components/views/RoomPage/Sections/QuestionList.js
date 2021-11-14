@@ -104,10 +104,11 @@ function QuestionList(props) {
             })
         }
 
-        return <div key={i}>
-            <div onClick={() => setQuestion(v)}>{v.title}</div>
+        return <div key={i} style={{flexDirection:'column'}}>
+            <div style={{display:'flex', flexDirection: 'row', cursor:'pointer'}} onClick={() => setQuestion(v)}><span style={{fontWeight:'bold'}}>질문 : </span>{v.title}</div>
+            <div style={{fontSize:'12px'}}>질문을 클릭해 내용을 확인하세요.</div>
             <div>{v.answered ? <span style={{ color: 'green' }}>해결</span> : <span style={{ color: 'red' }}>미해결</span>}</div>
-            <div>{v.questioner.name}</div>
+            <div>작성자 : {v.questioner.name}</div>
             <div>{moment(v.createdAt).format('YY-MM-DD')}</div>
             {(props.user._id === v.questioner._id || props.user._id === props.room.creator._id ) &&
                 <Button onClick={showConfirm}>삭제</Button>
@@ -116,7 +117,7 @@ function QuestionList(props) {
     })
 
     return (
-        <div>
+        <div style={{flexDirection:'column'}}>
             <button onClick={() => setOpenQuestionListModal(true)}><img src={conversation}/></button>
             <Modal
                 title='질문 목록'
