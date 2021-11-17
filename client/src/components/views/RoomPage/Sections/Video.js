@@ -5,7 +5,7 @@ const Container = Styled.div`
     position: relative;
     display: inline-block;
     width: 240px;
-    height: 270px;
+    height: 240px;
     margin: 5px;
 `;
 
@@ -34,7 +34,6 @@ const Video = ({ email, stream, muted }) => {
     return (
         <Container>
             <VideoContainer ref={ref} muted={isMuted} autoPlay></VideoContainer>
-            <UserLabel>{email}</UserLabel>
         </Container>
     );
 };
