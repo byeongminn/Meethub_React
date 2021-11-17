@@ -94,6 +94,11 @@
     border-top: 1px solid #faebd7;
 }
 
+.roomVideos{
+    display: flex;
+    max-width: 700px;
+}
+
 .roomVideos > div > div > canvas{
     position: absolute;
 }
