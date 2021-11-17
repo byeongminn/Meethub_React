@@ -107,6 +107,7 @@
 
 .roomVideos > div{
     display: flex;
+    flex-direction: column;
 }
 
 .ant-tabs-nav-wrap{
@@ -238,4 +239,10 @@
     color: white;
     font-size: 14px;
     font-weight: bold;
+}
+
+.roomVideos > div > button{
+    background-color: black;
+    color: antiquewhite;
+    border: 1px solid antiquewhite;
 }
