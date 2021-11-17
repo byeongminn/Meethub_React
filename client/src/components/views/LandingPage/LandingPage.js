@@ -71,17 +71,21 @@ function LandingPage(props) {
                         <Col key={index} lg={6} md={8} xs={24}>
                             <Card style={{ position: 'relative', cursor: 'pointer' }}
                                 onClick={() => {
-                                    if (room.roomPassword) {
-                                        room.attendanceBook.map((v,i)=>{
-                                            if(props.user.email === v.email){
-                                                props.history.push({ pathname: `/rooms/${room._id}`, room, user: props.user});
-                                                console.log(v.email);
-                                            }
-                                        })
-                                        handleOpenJoinModal(room);
-
+                                    if (props.user.isAuth) {
+                                        if (room.roomPassword) {
+                                            room.attendanceBook.map((v,i)=>{
+                                                if(props.user.email === v.email){
+                                                    props.history.push({ pathname: `/rooms/${room._id}`, room, user: props.user});
+                                                    console.log(v.email);
+                                                }
+                                            })
+                                            handleOpenJoinModal(room);
+    
+                                        } else {
+                                            props.history.push({ pathname: `/rooms/${room._id}`, room, user: props.user});
+                                        }
                                     } else {
-                                        props.history.push({ pathname: `/rooms/${room._id}`, room, user: props.user});
+                                        props.history.push('/login');
                                     }
                                 }}
                             >
