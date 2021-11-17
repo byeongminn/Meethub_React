@@ -216,7 +216,7 @@ function RoomPage(props) {
         navigator.mediaDevices
             .getUserMedia({
                 audio: true,
-                video:
+                video: 
                 {
                     width: 240,
                     height: 240,
@@ -256,7 +256,7 @@ function RoomPage(props) {
                     })
                     localStream = canvas1.captureStream(30)
                 }
-                //내 비디오정보를 가져오고 join_room을 하면 그때부터 소켓연결이 시작 됨.
+                // 내 비디오정보를 가져오고 join_room을 하면 그때부터 소켓연결이 시작 됨.
                 newSocket.emit("join_room", {
                     roomName: props.location.room.roomName,
                     user: props.location.user,
@@ -494,6 +494,7 @@ function RoomPage(props) {
                                     height: 240,
                                     margin: 5,
                                     backgroundColor: "#cfc6c64d",
+                                    marginBottom: '25px'
                                 }}
                                 muted
                                 ref={localVideoRef}
@@ -505,10 +506,10 @@ function RoomPage(props) {
 
                     {users.map((user, index) => {
                         return (
-                            <div key={index}>
+                            <div key={index} style={{ display: 'flex', flexDirection: 'column' }}>
                                 <Video key={index} email={user.email} stream={user.stream} />
-                                {/* <button onClick={() => cameraTurn(user.id)}>화상연결해제</button>
-                                <button onClick={() => cameraTurnRetry(user.id)}>
+                                <button onClick={() => cameraTurn(user.id)}>화상연결해제</button>
+                                {/* <button onClick={() => cameraTurnRetry(user.id)}>
                                     화상다시연결
 
                                 </button> */}

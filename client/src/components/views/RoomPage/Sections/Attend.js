@@ -18,7 +18,11 @@ function Attend(props) {
     const [totalCounter, setTotalCounter] = useState(0);
 
     const handleOpenAttendModal = () => {
-        setOpenAttendModal(true);
+        if (props.user._id === props.room.creator._id) {
+            setOpenAttendModal(true);
+        } else {
+            alert('해당 기능에 접근할 권한이 없습니다.');
+        }
     }
 
     const handleCloseAttendModal = () => {
@@ -161,9 +165,9 @@ function Attend(props) {
 
     return (
         <div>
-            {/*{props.user._id === props.room.creator._id &&*/}
+            
                 <button onClick={handleOpenAttendModal}><img src={user}/></button>
-            {/*}*/}
+            
             <Modal
                 style={{ textAlign: 'center' }}
                 title="출결 확인"
