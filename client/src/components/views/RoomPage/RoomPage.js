@@ -213,46 +213,47 @@ function RoomPage(props) {
         navigator.mediaDevices
             .getUserMedia({
                 audio: true,
-                video: {
-                    width: 240,
-                    height: 240,
-                },
+                video: false
+                // {
+                //     width: 240,
+                //     height: 240,
+                // },
             })
             .then((stream) => {
                 if (localVideoRef.current) localVideoRef.current.srcObject = stream;
-                let localVideo = document.createElement("video")
+                // let localVideo = document.createElement("video")
                 //localStream = stream;
-                localVideo.srcObject = stream;
-                localVideo.autoplay = true;
+                // localVideo.srcObject = stream;
+                // localVideo.autoplay = true;
                 localStream = stream;
-                if (localVideo.autoplay == true) {
-                    localVideo.addEventListener('playing', () => {
-                        let image = new Image()
-                        image.src = "/img/sunglasses.png"
-                        //const canvas=faceApi.createCanvasFromMedia(localVideo)
-                        //const ctx = canvas.getContext('2d');
-                        //document.body.append(canvas)
-                        function step() {
-                            getFace(localVideo, mtcnnForwardParams)
-                            const ctx = canvas1.getContext('2d');
-                            ctx.drawImage(localVideo, 0, 0)
-                            results.map(result => {
-                                ctx.drawImage(
-                                    image,
-                                    result.detection.box.x + 15,
-                                    result.detection.box.y + 30,
-                                    result.detection.box.width,
-                                    result.detection.box.width * (image.height / image.width)
-                                )
-                            })
-                            requestAnimationFrame(step)
+                // if (localVideo.autoplay == true) {
+                //     localVideo.addEventListener('playing', () => {
+                //         let image = new Image()
+                //         image.src = "/img/sunglasses.png"
+                //         //const canvas=faceApi.createCanvasFromMedia(localVideo)
+                //         //const ctx = canvas.getContext('2d');
+                //         //document.body.append(canvas)
+                //         function step() {
+                //             getFace(localVideo, mtcnnForwardParams)
+                //             const ctx = canvas1.getContext('2d');
+                //             ctx.drawImage(localVideo, 0, 0)
+                //             results.map(result => {
+                //                 ctx.drawImage(
+                //                     image,
+                //                     result.detection.box.x + 15,
+                //                     result.detection.box.y + 30,
+                //                     result.detection.box.width,
+                //                     result.detection.box.width * (image.height / image.width)
+                //                 )
+                //             })
+                //             requestAnimationFrame(step)
 
-                        }
+                //         }
 
-                        requestAnimationFrame(step)
-                    })
-                    localStream = canvas1.captureStream(30)
-                }
+                //         requestAnimationFrame(step)
+                //     })
+                //     localStream = canvas1.captureStream(30)
+                // }
                 //내 비디오정보를 가져오고 join_room을 하면 그때부터 소켓연결이 시작 됨.
                 newSocket.emit("join_room", {
                     roomName: props.location.room.roomName,
@@ -261,10 +262,10 @@ function RoomPage(props) {
                 es.play();
             })
             .catch((error) => {
-                message.error('카메라와 마이크를 연결 후 다시 입장해주세요.');
-                setTimeout(() => {
-                    props.history.push('/');
-                }, 2000);
+                // message.error('카메라와 마이크를 연결 후 다시 입장해주세요.');
+                // setTimeout(() => {
+                //     props.history.push('/');
+                // }, 2000);
             });
 
         if (props.location.room && props.location.user) {
