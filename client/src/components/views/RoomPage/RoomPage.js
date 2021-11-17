@@ -41,7 +41,7 @@ function RoomPage(props) {
     }
 
     const mtcnnForwardParams = {
-        minFaceSize: 200
+        minFaceSize: 80
     }
     var results = [];
 
@@ -438,8 +438,38 @@ function RoomPage(props) {
             </div>
             <div className="roomBody">
                 <div className="roomVideos">
+                    {/* <div>
+                        <div>
+                            <canvas ref={canvasRef} width="240" height="240" {...props}>Your browser does not support Canvas</canvas>
+                            <video
+                                style={{
+                                    width: 240,
+                                    height: 240,
+                                    margin: 5,
+                                    backgroundColor: "#cfc6c64d",
+                                }}
+                                muted
+                                ref={localVideoRef}
+                                autoPlay
+                            ></video>
+                        </div>
+                        <div>
+                            <canvas ref={canvasRef} width="240" height="240" {...props}>Your browser does not support Canvas</canvas>
+                            <video
+                                style={{
+                                    width: 240,
+                                    height: 240,
+                                    margin: 5,
+                                    backgroundColor: "#cfc6c64d",
+                                }}
+                                muted
+                                ref={localVideoRef}
+                                autoPlay
+                            ></video>
+                        </div>
+                    </div> */}
                     <div>
-                        <div>
+                        {/* <div>
                             <canvas ref={canvasRef} width="240" height="240" {...props}>Your browser does not support Canvas</canvas>
                             <video
                                 style={{
@@ -452,37 +482,7 @@ function RoomPage(props) {
                                 ref={localVideoRef}
                                 autoPlay
                             ></video>
-                        </div>
-                        <div>
-                            <canvas ref={canvasRef} width="240" height="240" {...props}>Your browser does not support Canvas</canvas>
-                            <video
-                                style={{
-                                    width: 240,
-                                    height: 240,
-                                    margin: 5,
-                                    backgroundColor: "#cfc6c64d",
-                                }}
-                                muted
-                                ref={localVideoRef}
-                                autoPlay
-                            ></video>
-                        </div>
-                    </div>
-                    <div>
-                        <div>
-                            <canvas ref={canvasRef} width="240" height="240" {...props}>Your browser does not support Canvas</canvas>
-                            <video
-                                style={{
-                                    width: 240,
-                                    height: 240,
-                                    margin: 5,
-                                    backgroundColor: "#cfc6c64d",
-                                }}
-                                muted
-                                ref={localVideoRef}
-                                autoPlay
-                            ></video>
-                        </div>
+                        </div> */}
                         <div>
                             <canvas ref={canvasRef} width="240" height="240" {...props}>Your browser does not support Canvas</canvas>
                             <video
@@ -504,11 +504,11 @@ function RoomPage(props) {
                         return (
                             <div key={index}>
                                 <Video key={index} email={user.email} stream={user.stream} />
-                                <button onClick={() => cameraTurn(user.id)}>화상연결해제</button>
+                                {/* <button onClick={() => cameraTurn(user.id)}>화상연결해제</button>
                                 <button onClick={() => cameraTurnRetry(user.id)}>
                                     화상다시연결
 
-                                </button>
+                                </button> */}
                             </div>
                         );
                     })}
