@@ -25,6 +25,7 @@ import user from './img/user.png'
 import videoCamera from './img/video-camera.png'
 import votingBox from './img/voting-box.png'
 import mic from './img/mic.png'
+import warningSign from './img/warning-sign.png'
 
 
 const { TabPane } = Tabs;
@@ -62,6 +63,7 @@ function RoomPage(props) {
         ],
     };
     const canvasRef = useRef(null);
+    const isMute = useRef(false);
 
     const [socket, setSocket] = useState({});
     useEffect(() => {
@@ -419,6 +421,16 @@ function RoomPage(props) {
         }
     }
 
+    const onMute = () => {
+        if (!isMute.current) {
+            localVideoRef.current.srcObject.getAudioTracks()[0].enabled = false;
+            isMute.current = !isMute.current;
+        } else {
+            localVideoRef.current.srcObject.getAudioTracks()[0].enabled = true;
+            isMute.current = !isMute.current;
+        }
+    };
+
     return (
         <div>
             <div className="roomHead">
@@ -520,9 +532,10 @@ function RoomPage(props) {
 
                 <div className="leftFooter">
 
-                    <button className="soundOnBtn" onClick={handleCamera}>
-                        <span><img src={mic} /></span>
+                    <button className="soundOnBtn" onClick={onMute}>
+                        <img src={mic} />
                     </button>
+                    
                     <button
                         onClick={() => {
                             socket.disconnect();
@@ -535,10 +548,10 @@ function RoomPage(props) {
                     {/* <button className="cameraOnBtn" onClick={handleCamera}>
                           <img src={ videoCamera} />
                       </button> 임시로 경고버튼으로사용*/}
-                    <button className="cameraOnBtn" onClick={() => { socket.emit("warning", room.roomName) }}>
-                        <img src={videoCamera} />
+                    
+                    <button className="cameraOnBtn" onClick={handleCamera}>
+                        <span><img src={videoCamera} /></span>
                     </button>
-
 
                 </div>
 
@@ -567,6 +580,11 @@ function RoomPage(props) {
                                                 onChangeLocalStream={onChangeLocalStream}
                                                 pcs={pcsState}
                                             />
+                                        </div>
+                                        <div style={{ backgroundColor: 'white' }}>
+                                            <button onClick={() => { socket.emit("warning", room.roomName) }}>
+                                                <img src={warningSign} />
+                                            </button>
                                         </div>
                                     </div>
                                 )}
