@@ -13,6 +13,7 @@ const { Room } = require("./server/models/Room");
 const { Vote } = require("./server/models/Vote");
 const { Question } = require("./server/models/Question");
 const { Answer } = require("./server/models/Answer");
+const { measureMemory } = require('vm');
 
 app.use(express.json());
 app.use(cookieParser());
@@ -157,6 +158,9 @@ wsServer.on("connection", (socket) => {
   })
   socket.on("send_message", (roomName, chat) => {
     wsServer.to(roomName).emit("receive_message", chat);
+  })
+  socket.on("warning", (roomName) => {
+    socket.broadcast.emit("warning_message",users[roomName]);
   })
   socket.on('disconnect', () => {
     const roomName = socketToRoom[socket.id];

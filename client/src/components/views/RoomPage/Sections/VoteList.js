@@ -5,6 +5,8 @@ import axios from 'axios';
 import moment from 'moment';
 import Vote from './Vote';
 
+import voteingBox from "../img/voting-box.png";
+
 const { confirm } = Modal;
 
 function VoteList(props) {
@@ -128,13 +130,14 @@ function VoteList(props) {
             })
         }
 
-        return <div style={{margin:'0 0 30px 0'}}key={i}>
-            <div onClick={() => setVote(v)}><span style={{fontSize:"18px", fontWeight:"bold"}}> 투표 제목 : </span>{v.content}</div>
-            <div>{v.voted.length}</div>
-            <div>{v.available ? <span style={{ color: 'black', fontWeight: '600' }}>투표중</span> : <span style={{ color: 'gray' }}>종료</span>}</div>
+        return <div style={{margin:'0 0 30px 0', flexDirection:'column'}}key={i}>
+            <div onClick={() => setVote(v)}><span style={{fontSize:"18px", fontWeight:"bold", cursor:"pointer"}}> 투표 제목 : </span>{v.content}</div>
+            <div><span>투표의 제목을 눌러 투표해주세요.</span></div>
+            <div>투표 수 : {v.voted.length}</div>
+            <div>{v.available ? <span style={{ color: 'green', fontWeight: '600'}}>투표중</span> : <span style={{ color: 'red' }}>종료</span>}</div>
             <div>{moment(v.createdAt).format('YY-MM-DD')}</div>
             {props.user._id === v.creator._id &&
-                <Button disabled={v.available ? false : true} onClick={onVoteClosing}>종료</Button>
+                <Button disabled={v.available ? false : true} onClick={onVoteClosing} >종료</Button>
             }
             {props.user._id === v.creator._id &&
                 <Button onClick={showConfirm}>삭제</Button>
@@ -144,7 +147,7 @@ function VoteList(props) {
 
     return (
         <div>
-            <button onClick={() => setOpenVoteListModal(true)}>투표</button>
+            <button onClick={() => setOpenVoteListModal(true)}><img src={ voteingBox} /></button>
             <Modal
                 title='투표'
                 visible={openVoteListModal}
