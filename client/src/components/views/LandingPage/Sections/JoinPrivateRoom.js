@@ -10,10 +10,11 @@ function JoinRoom(props) {
         } = event;
         setPassword(value);
     }
-    
+    console.log(props);
     const onOk = () => {
         if (password === props.room.roomPassword) {
             props.history.push(`/rooms/${props.room._id}`);
+            props.history.push({ pathname: `/rooms/${props.room._id}`, room: props.room, user: props.user });
         } else {
             message.error('비밀번호가 틀렸습니다.');
         }
